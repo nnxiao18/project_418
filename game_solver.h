@@ -17,8 +17,8 @@ class GameSolver {
   public:
     // Default constructor: initialize game_ at its initial state.
     GameSolver() = default;
-    // Returns the index of the best next move to play.
-    virtual int bestNextMove() = 0;
+    // Determines and plays the best move for the current state.
+    virtual void playBestMove() = 0;
 };
 
 #endif  /* GAME_SOLVER_H */

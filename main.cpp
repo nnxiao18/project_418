@@ -8,7 +8,7 @@ int main() {
     ChessGame::GameOverStatus s = cg.isOver();
     printf("Status is %d\n", s);
     HeuristicSolver<ChessGame> hs;
-    int v = hs.bestNextMove();
-    printf("Value is %d\n", v);
+    hs.playBestMove();
+    printf("Played move\n");
     return 0;
 }

@@ -9,12 +9,12 @@ template <class Game>
 class HeuristicSolver : public GameSolver<Game>{
   using GameSolver<Game>::game_;
   public:
-    virtual int bestNextMove();
+    virtual void playBestMove();
 };
 
 template <class Game>
-int HeuristicSolver<Game>::bestNextMove() {
-    return game_.leafEvalState();
+void HeuristicSolver<Game>::playBestMove() {
+    return;
 }
 
 #endif  /* HEURISTIC_SOLVER_H */
