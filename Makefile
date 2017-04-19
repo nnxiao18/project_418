@@ -1,13 +1,17 @@
-CC=g++
-CFLAGS=-Wall -Wextra -O2 -std=c++11 -I.
-DEPS = chess_game.h
-OBJ = chess_game.o main.o
+CC = g++
+CFLAGS = -c -Wall -Wextra -O2 -std=c++11
+LFLAGS = -Wall
+DEBUG = -g
+OBJS = chess_game.o main.o
 
-%.o: %.c $(DEPS)
-	$(CC) -c -o $@ $^ $(CFLAGS)
+main: $(OBJS)
+	$(CC) -o $@ $^ $(LFLAGS)
 
-main: $(OBJ)
-	$(CC) -o $@ $^ $(CFLAGS)
+chess_game.o: chess_game.h chess_game.cpp
+	$(CC) chess_game.cpp $(CFLAGS)
+
+main.o: main.cpp game_solver.h
+	$(CC) main.cpp $(CFLAGS)
 
 .PHONY: clean
 clean:

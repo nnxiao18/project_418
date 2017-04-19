@@ -14,6 +14,10 @@ bool ChessGame::isOver() {
     return false;
 }
 
+int ChessGame::leafEvalState() {
+    return 42;
+}
+
 void ChessGame::playMove(Move move) {
     move += 5;
     return;

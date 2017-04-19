@@ -1,10 +1,11 @@
 #include <stdio.h>
 
 #include "chess_game.h"
+#include "game_solver.h"
 
 int main() {
-    ChessGame g;
-    bool o = g.isOver();
-    printf("Value is %d\n", o);
+    GameSolver<ChessGame> gs;
+    int v = gs.bestNextMove();
+    printf("Value is %d\n", v);
     return 0;
 }
