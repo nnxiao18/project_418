@@ -7,7 +7,7 @@ OBJS = chess_game.o main.o
 main: $(OBJS)
 	$(CC) -o $@ $^ $(LFLAGS)
 
-chess_game.o: chess_game.h chess_game.cpp
+chess_game.o: chess_game.h chess_game.cpp game.h
 	$(CC) chess_game.cpp $(CFLAGS)
 
 main.o: main.cpp game_solver.h

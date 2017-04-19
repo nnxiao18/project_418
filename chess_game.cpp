@@ -1,24 +1,24 @@
 #include "chess_game.h"
 
-ChessGame::ChessGame()
-    : current_state_(2)
-{
-    resetState();
+// TODO: All functions here are just stubs that typecheck. Actual
+// implementation for chess is needed.
+
+// TODO: Move generation will be the hardest part by far. We can find existing
+// algorithms and re-implement them, but even that might be quite hard... we
+// should maybe consider starting with an easier game than chess.
+std::vector<ChessMove> ChessGame::availableMoves() {
+    return std::vector<ChessMove>();
 }
 
-ChessGame::Move ChessGame::availableMoves() {
-    return 1;
-}
-
-bool ChessGame::isOver() {
-    return false;
+ChessGame::GameOverStatus ChessGame::isOver() {
+    return kNotOver;
 }
 
 int ChessGame::leafEvalState() {
-    return 42;
+    return 2;
 }
 
-void ChessGame::playMove(Move move) {
+void ChessGame::playMove(ChessMove move) {
     move += 5;
     return;
 }
