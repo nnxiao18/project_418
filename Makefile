@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-Wall -Wextra -O2 -std=c++11 -I.
-DEPS = game.h
-OBJ = game.o main.o
+DEPS = chess_game.h
+OBJ = chess_game.o main.o
 
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $^ $(CFLAGS)
