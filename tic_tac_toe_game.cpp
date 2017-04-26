@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-std::vector<TicTacToeMove> TicTacToeGame::availableMoves() {
+std::vector<TicTacToeMove> TicTacToeGame::availableMoves() const {
     std::vector<TicTacToeMove> moves;
     for (int r = 0; r < BOARD_SIDE; ++r) {
         for (int c = 0; c < BOARD_SIDE; ++c) {
@@ -14,7 +14,7 @@ std::vector<TicTacToeMove> TicTacToeGame::availableMoves() {
     return moves;
 }
 
-TicTacToeGame::GameStatus TicTacToeGame::status() {
+TicTacToeGame::GameStatus TicTacToeGame::status() const {
     const auto& board = current_state_.first;
     // Check for horizontal wins.
     for (int r = 0; r < BOARD_SIDE; ++r) {
@@ -88,7 +88,7 @@ TicTacToeGame::GameStatus TicTacToeGame::status() {
 }
 
 // Give 3 points for center, 2 for corners, 1 for sides.
-int TicTacToeGame::leafEvalState() {
+int TicTacToeGame::leafEvalState() const {
     int score = 0;
     for (int r = 0; r < BOARD_SIDE; ++r) {
         for (int c = 0; c < BOARD_SIDE; ++c) {
@@ -137,7 +137,7 @@ void TicTacToeGame::resetState() {
     return;
 }
 
-std::string TicTacToeGame::stateString() {
+std::string TicTacToeGame::stateString() const {
     std::string state_string;
     if (current_state_.second) {
         state_string.append("First player's turn\n");

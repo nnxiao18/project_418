@@ -27,15 +27,15 @@ class TicTacToeGame : public Game<TicTacToeState, TicTacToeMove> {
     TicTacToeGame() : Game<TicTacToeState, TicTacToeMove>() {
         resetState();
     }
-    virtual std::vector<TicTacToeMove> availableMoves();
-    virtual GameStatus status();
-    virtual int leafEvalState();
+    virtual std::vector<TicTacToeMove> availableMoves() const;
+    virtual GameStatus status() const;
+    virtual int leafEvalState() const;
     // NOTE: Does not validate the given move; calling with an invalid move for
     // the current state can get you into an invalid game state.
     virtual void playMove(TicTacToeMove move);
     virtual void resetState();
     // Get a text representation of the game state, for testing and debugging.
-    std::string stateString();
+    std::string stateString() const;
 };
 
 #endif  /* TIC_TAC_TOE_GAME_H */

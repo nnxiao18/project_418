@@ -12,9 +12,9 @@ class ChessGame : public Game<ChessState, ChessMove> {
     ChessGame() : Game<ChessState, ChessMove>() {
         resetState();
     }
-    virtual std::vector<ChessMove> availableMoves();
-    virtual GameStatus status();
-    virtual int leafEvalState();
+    virtual std::vector<ChessMove> availableMoves() const;
+    virtual GameStatus status() const;
+    virtual int leafEvalState() const;
     virtual void playMove(ChessMove move);
     virtual void resetState();
 };

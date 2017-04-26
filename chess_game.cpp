@@ -6,15 +6,15 @@
 // TODO: Move generation will be the hardest part by far. We can find existing
 // algorithms and re-implement them, but even that might be quite hard... we
 // should maybe consider starting with an easier game than chess.
-std::vector<ChessMove> ChessGame::availableMoves() {
+std::vector<ChessMove> ChessGame::availableMoves() const {
     return std::vector<ChessMove>();
 }
 
-ChessGame::GameStatus ChessGame::status() {
+ChessGame::GameStatus ChessGame::status() const {
     return kFirstPlayerTurn;
 }
 
-int ChessGame::leafEvalState() {
+int ChessGame::leafEvalState() const {
     return 2;
 }
 

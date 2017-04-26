@@ -2,17 +2,22 @@
 
 #include "cycle_timer.h"
 #include "tic_tac_toe_game.h"
-#include "heuristic_solver.h"
+#include "sequential_minimax_solver.h"
+
+#define REPEAT_TRIALS 10
 
 int main() {
-    HeuristicSolver<TicTacToeGame> hs;
-    double start = CycleTimer::currentSeconds();
-    for (int i = 0; i < 9; ++i) {
-        hs.playBestMove();
-        std::cout << "Played move " << i << std::endl;
+    double total_time = 0;
+    for (int trial = 0; trial < REPEAT_TRIALS; ++trial) {
+        SequentialMinimaxSolver<TicTacToeGame, 9> sms;
+        double trial_start = CycleTimer::currentSeconds();
+        for (int i = 0; i < 9; ++i) {
+            sms.playBestMove();
+        }
+        double trial_end = CycleTimer::currentSeconds();
+        total_time += trial_end - trial_start;
+        std::cout << "Trial " << trial << std::endl;
     }
-    double end = CycleTimer::currentSeconds();
-    std::cout << "Seconds elapsed playing moves: " << (end - start) <<
-            std::endl;
+    std::cout << "Seconds elapsed playing moves: " << total_time << std::endl;
     return 0;
 }

@@ -17,7 +17,7 @@ class HeuristicSolver : public GameSolver<Game>{
 
 template <class Game>
 void HeuristicSolver<Game>::playBestMove() {
-    bool firstPlayerTurn = true;
+    bool first_player_turn = true;
     // If game is over, return without action.
     switch (game_.status()) {
         case Game::kFirstPlayerWon:
@@ -25,14 +25,14 @@ void HeuristicSolver<Game>::playBestMove() {
         case Game::kTie:
             return;
         case Game::kFirstPlayerTurn:
-            firstPlayerTurn = true;
+            first_player_turn = true;
             break;
         case Game::kSecondPlayerTurn:
-            firstPlayerTurn = false;
+            first_player_turn = false;
             break;
     }
     auto moves = game_.availableMoves();
-    int best_score = firstPlayerTurn ? INT_MIN : INT_MAX;
+    int best_score = first_player_turn ? INT_MIN : INT_MAX;
     auto best_move = moves[0];
     for (auto m : moves) {
         Game game_copy = Game(game_);
@@ -54,7 +54,7 @@ void HeuristicSolver<Game>::playBestMove() {
                 score = 0;
                 break;
         }
-        if (firstPlayerTurn) {
+        if (first_player_turn) {
             if (score > best_score) {
                 best_score = score;
                 best_move = m;
