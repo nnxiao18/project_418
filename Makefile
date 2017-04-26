@@ -3,16 +3,26 @@ CFLAGS = -c -Wall -Wextra -O2 -std=c++11
 LFLAGS = -Wall
 DEBUG = -g
 OBJS = chess_game.o main.o
+TESTS = tic_tac_toe_game.o test_tic_tac_toe.o
 
 main: $(OBJS)
 	$(CC) -o $@ $^ $(LFLAGS)
 
+test: $(TESTS)
+	$(CC) -o $@ $^ $(LFLAGS)
+
+tic_tac_toe_game.o: tic_tac_toe_game.h tic_tac_toe_game.cpp game.h
+	$(CC) tic_tac_toe_game.cpp $(CFLAGS)
+
 chess_game.o: chess_game.h chess_game.cpp game.h
 	$(CC) chess_game.cpp $(CFLAGS)
+
+test_tic_tac_toe.o: test_tic_tac_toe.cpp tic_tac_toe_game.h
+	$(CC) test_tic_tac_toe.cpp $(CFLAGS)
 
 main.o: main.cpp game_solver.h
 	$(CC) main.cpp $(CFLAGS)
 
 .PHONY: clean
 clean:
-	rm -f *.o main
+	rm -f *.o main test

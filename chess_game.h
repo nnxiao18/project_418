@@ -1,8 +1,6 @@
 #ifndef CHESS_GAME_H
 #define CHESS_GAME_H
 
-#include <vector>
-
 #include "game.h"
 
 // TODO: Change these to actual types that represent states and moves.

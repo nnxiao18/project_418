@@ -12,9 +12,10 @@ class Game {
     State current_state_;
   public:
     enum GameOverStatus {
+        kNotOver,
         kFirstPlayerWon,
         kSecondPlayerWon,
-        kNotOver,
+        kTie,
     };
     // Returns a list of available moves at the current state of the game.
     virtual std::vector<Move> availableMoves() = 0;
