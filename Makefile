@@ -2,7 +2,7 @@ CC = g++
 CFLAGS = -c -Wall -Wextra -O2 -std=c++11
 LFLAGS = -Wall
 DEBUG = -g
-OBJS = chess_game.o main.o
+OBJS = tic_tac_toe_game.o main.o
 TESTS = tic_tac_toe_game.o test_tic_tac_toe.o
 
 main: $(OBJS)
@@ -20,7 +20,7 @@ chess_game.o: chess_game.h chess_game.cpp game.h
 test_tic_tac_toe.o: test_tic_tac_toe.cpp tic_tac_toe_game.h
 	$(CC) test_tic_tac_toe.cpp $(CFLAGS)
 
-main.o: main.cpp chess_game.h heuristic_solver.h
+main.o: main.cpp tic_tac_toe_game.h heuristic_solver.h
 	$(CC) main.cpp $(CFLAGS)
 
 .PHONY: clean

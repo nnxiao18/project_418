@@ -1,14 +1,13 @@
-#include <cstdio>
+#include <iostream>
 
-#include "chess_game.h"
+#include "tic_tac_toe_game.h"
 #include "heuristic_solver.h"
 
 int main() {
-    ChessGame cg;
-    ChessGame::GameStatus s = cg.status();
-    printf("Status is %d\n", s);
-    HeuristicSolver<ChessGame> hs;
-    hs.playBestMove();
-    printf("Played move\n");
+    HeuristicSolver<TicTacToeGame> hs;
+    for (int i = 0; i < 9; ++i) {
+        hs.playBestMove();
+        std::cout << "Played move " << i << std::endl;
+    }
     return 0;
 }
