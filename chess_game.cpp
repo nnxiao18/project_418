@@ -10,8 +10,8 @@ std::vector<ChessMove> ChessGame::availableMoves() {
     return std::vector<ChessMove>();
 }
 
-ChessGame::GameOverStatus ChessGame::isOver() {
-    return kNotOver;
+ChessGame::GameStatus ChessGame::status() {
+    return kFirstPlayerTurn;
 }
 
 int ChessGame::leafEvalState() {

@@ -11,15 +11,16 @@ class Game {
   protected:
     State current_state_;
   public:
-    enum GameOverStatus {
-        kNotOver,
+    enum GameStatus {
+        kFirstPlayerTurn,
+        kSecondPlayerTurn,
         kFirstPlayerWon,
         kSecondPlayerWon,
         kTie,
     };
     // Returns a list of available moves at the current state of the game.
     virtual std::vector<Move> availableMoves() = 0;
-    virtual GameOverStatus isOver() = 0;
+    virtual GameStatus status() = 0;
     // Returns the value of the current state according to a simple heuristic
     // calculation.
     // NOTE: This really belongs in the solver, not the game, since the

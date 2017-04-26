@@ -15,33 +15,33 @@ std::vector<TicTacToeMove> all_moves = {0, 1, 2, 3, 4, 5, 6, 7, 8};
 void test_x_win_vertical() {
     // Initialize game.
     TicTacToeGame g;
-    assert(g.isOver() == TicTacToeGame::kNotOver);
+    assert(g.status() == TicTacToeGame::kFirstPlayerTurn);
     std::string current_state = g.stateString();
     assert(current_state == XWV_INITIAL_STATE);
     assert(g.availableMoves() == all_moves);
     // Play X at (0,0).
     g.playMove(0);
-    assert(g.isOver() == TicTacToeGame::kNotOver);
+    assert(g.status() == TicTacToeGame::kSecondPlayerTurn);
     current_state = g.stateString();
     assert(current_state == XWV_TURN_1);
     // Play O at (1,1).
     g.playMove(4);
-    assert(g.isOver() == TicTacToeGame::kNotOver);
+    assert(g.status() == TicTacToeGame::kFirstPlayerTurn);
     current_state = g.stateString();
     assert(current_state == XWV_TURN_2);
     // Play X at (2,0).
     g.playMove(6);
-    assert(g.isOver() == TicTacToeGame::kNotOver);
+    assert(g.status() == TicTacToeGame::kSecondPlayerTurn);
     current_state = g.stateString();
     assert(current_state == XWV_TURN_3);
     // Play O at (0,1).
     g.playMove(1);
-    assert(g.isOver() == TicTacToeGame::kNotOver);
+    assert(g.status() == TicTacToeGame::kFirstPlayerTurn);
     current_state = g.stateString();
     assert(current_state == XWV_TURN_4);
     // Play X at (1,0) to win.
     g.playMove(3);
-    assert(g.isOver() == TicTacToeGame::kFirstPlayerWon);
+    assert(g.status() == TicTacToeGame::kFirstPlayerWon);
     current_state = g.stateString();
     assert(current_state == XWV_TURN_5);
     assert(g.leafEvalState() == 1);
@@ -60,37 +60,37 @@ void test_x_win_vertical() {
 void test_o_win_horizontal() {
     // Initialize game.
     TicTacToeGame g;
-    assert(g.isOver() == TicTacToeGame::kNotOver);
+    assert(g.status() == TicTacToeGame::kFirstPlayerTurn);
     std::string current_state = g.stateString();
     assert(current_state == OWH_INITIAL_STATE);
     // Play X at (0,0).
     g.playMove(0);
-    assert(g.isOver() == TicTacToeGame::kNotOver);
+    assert(g.status() == TicTacToeGame::kSecondPlayerTurn);
     current_state = g.stateString();
     assert(current_state == OWH_TURN_1);
     // Play O at (1,1).
     g.playMove(4);
-    assert(g.isOver() == TicTacToeGame::kNotOver);
+    assert(g.status() == TicTacToeGame::kFirstPlayerTurn);
     current_state = g.stateString();
     assert(current_state == OWH_TURN_2);
     // Play X at (2,0).
     g.playMove(6);
-    assert(g.isOver() == TicTacToeGame::kNotOver);
+    assert(g.status() == TicTacToeGame::kSecondPlayerTurn);
     current_state = g.stateString();
     assert(current_state == OWH_TURN_3);
     // Play O at (1,0).
     g.playMove(3);
-    assert(g.isOver() == TicTacToeGame::kNotOver);
+    assert(g.status() == TicTacToeGame::kFirstPlayerTurn);
     current_state = g.stateString();
     assert(current_state == OWH_TURN_4);
     // Play X at (2,1).
     g.playMove(7);
-    assert(g.isOver() == TicTacToeGame::kNotOver);
+    assert(g.status() == TicTacToeGame::kSecondPlayerTurn);
     current_state = g.stateString();
     assert(current_state == OWH_TURN_5);
     // Play O at (1,2) to win.
     g.playMove(5);
-    assert(g.isOver() == TicTacToeGame::kSecondPlayerWon);
+    assert(g.status() == TicTacToeGame::kSecondPlayerWon);
     current_state = g.stateString();
     assert(current_state == OWH_TURN_6);
     assert(g.leafEvalState() == 0);
@@ -108,32 +108,32 @@ void test_o_win_horizontal() {
 void test_x_win_diagonal1() {
     // Initialize game.
     TicTacToeGame g;
-    assert(g.isOver() == TicTacToeGame::kNotOver);
+    assert(g.status() == TicTacToeGame::kFirstPlayerTurn);
     std::string current_state = g.stateString();
     assert(current_state == XWD1_INITIAL_STATE);
     // Play X at (0,0).
     g.playMove(0);
-    assert(g.isOver() == TicTacToeGame::kNotOver);
+    assert(g.status() == TicTacToeGame::kSecondPlayerTurn);
     current_state = g.stateString();
     assert(current_state == XWD1_TURN_1);
     // Play O at (2,0).
     g.playMove(6);
-    assert(g.isOver() == TicTacToeGame::kNotOver);
+    assert(g.status() == TicTacToeGame::kFirstPlayerTurn);
     current_state = g.stateString();
     assert(current_state == XWD1_TURN_2);
     // Play X at (1,1).
     g.playMove(4);
-    assert(g.isOver() == TicTacToeGame::kNotOver);
+    assert(g.status() == TicTacToeGame::kSecondPlayerTurn);
     current_state = g.stateString();
     assert(current_state == XWD1_TURN_3);
     // Play O at (2,1).
     g.playMove(7);
-    assert(g.isOver() == TicTacToeGame::kNotOver);
+    assert(g.status() == TicTacToeGame::kFirstPlayerTurn);
     current_state = g.stateString();
     assert(current_state == XWD1_TURN_4);
     // Play X at (2,2).
     g.playMove(8);
-    assert(g.isOver() == TicTacToeGame::kFirstPlayerWon);
+    assert(g.status() == TicTacToeGame::kFirstPlayerWon);
     current_state = g.stateString();
     assert(current_state == XWD1_TURN_5);
     assert(g.leafEvalState() == 4);
@@ -152,37 +152,37 @@ void test_x_win_diagonal1() {
 void test_o_win_diagonal2() {
     // Initialize game.
     TicTacToeGame g;
-    assert(g.isOver() == TicTacToeGame::kNotOver);
+    assert(g.status() == TicTacToeGame::kFirstPlayerTurn);
     std::string current_state = g.stateString();
     assert(current_state == OWD2_INITIAL_STATE);
     // Play X at (0,0).
     g.playMove(0);
-    assert(g.isOver() == TicTacToeGame::kNotOver);
+    assert(g.status() == TicTacToeGame::kSecondPlayerTurn);
     current_state = g.stateString();
     assert(current_state == OWD2_TURN_1);
     // Play O at (1,1).
     g.playMove(4);
-    assert(g.isOver() == TicTacToeGame::kNotOver);
+    assert(g.status() == TicTacToeGame::kFirstPlayerTurn);
     current_state = g.stateString();
     assert(current_state == OWD2_TURN_2);
     // Play X at (1,0).
     g.playMove(3);
-    assert(g.isOver() == TicTacToeGame::kNotOver);
+    assert(g.status() == TicTacToeGame::kSecondPlayerTurn);
     current_state = g.stateString();
     assert(current_state == OWD2_TURN_3);
     // Play O at (2,0).
     g.playMove(6);
-    assert(g.isOver() == TicTacToeGame::kNotOver);
+    assert(g.status() == TicTacToeGame::kFirstPlayerTurn);
     current_state = g.stateString();
     assert(current_state == OWD2_TURN_4);
     // Play X at (0,1).
     g.playMove(1);
-    assert(g.isOver() == TicTacToeGame::kNotOver);
+    assert(g.status() == TicTacToeGame::kSecondPlayerTurn);
     current_state = g.stateString();
     assert(current_state == OWD2_TURN_5);
     // Play O at (0,2) to win.
     g.playMove(2);
-    assert(g.isOver() == TicTacToeGame::kSecondPlayerWon);
+    assert(g.status() == TicTacToeGame::kSecondPlayerWon);
     current_state = g.stateString();
     assert(current_state == OWD2_TURN_6);
     assert(g.leafEvalState() == -3);

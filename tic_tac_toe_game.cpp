@@ -14,7 +14,7 @@ std::vector<TicTacToeMove> TicTacToeGame::availableMoves() {
     return moves;
 }
 
-TicTacToeGame::GameOverStatus TicTacToeGame::isOver() {
+TicTacToeGame::GameStatus TicTacToeGame::status() {
     const auto& board = current_state_.first;
     // Check for horizontal wins.
     for (int r = 0; r < BOARD_SIDE; ++r) {
@@ -79,7 +79,8 @@ TicTacToeGame::GameOverStatus TicTacToeGame::isOver() {
     // Check for empty squares.
     for (SquareStatus s : board) {
         if (s == kEmpty) {
-            return kNotOver;
+            return current_state_.second ?
+                    kFirstPlayerTurn : kSecondPlayerTurn;
         }
     }
     // If board is filled and no one won, it's a tie.

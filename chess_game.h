@@ -13,7 +13,7 @@ class ChessGame : public Game<ChessState, ChessMove> {
         resetState();
     }
     virtual std::vector<ChessMove> availableMoves();
-    virtual GameOverStatus isOver();
+    virtual GameStatus status();
     virtual int leafEvalState();
     virtual void playMove(ChessMove move);
     virtual void resetState();

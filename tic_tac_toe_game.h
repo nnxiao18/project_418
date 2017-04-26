@@ -28,7 +28,7 @@ class TicTacToeGame : public Game<TicTacToeState, TicTacToeMove> {
         resetState();
     }
     virtual std::vector<TicTacToeMove> availableMoves();
-    virtual GameOverStatus isOver();
+    virtual GameStatus status();
     virtual int leafEvalState();
     // NOTE: Does not validate the given move; calling with an invalid move for
     // the current state can get you into an invalid game state.

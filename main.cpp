@@ -5,7 +5,7 @@
 
 int main() {
     ChessGame cg;
-    ChessGame::GameOverStatus s = cg.isOver();
+    ChessGame::GameStatus s = cg.status();
     printf("Status is %d\n", s);
     HeuristicSolver<ChessGame> hs;
     hs.playBestMove();
