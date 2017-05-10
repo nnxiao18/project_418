@@ -57,9 +57,13 @@ int SequentialMinimaxSolver<Game, depth>::playBestMoveForGame(
                 }
                 break;
             case Game::kFirstPlayerWon:
+                // TODO: If first_player_turn, could break out of for loop here
+                // because we know we can't do better than a winning move.
                 score = INT_MAX;
                 break;
             case Game::kSecondPlayerWon:
+                // TODO: If !first_player_turn, could break out of for loop
+                // here because we know we can't do better than a winning move.
                 score = INT_MIN;
                 break;
             case Game::kTie:

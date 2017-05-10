@@ -1,4 +1,3 @@
-- Sequential AB
 - Version of sequential minimax/AB using move undoing instead of state copying
   (this might be a lot faster?)
 - Parallel minimax w/ OpenMP
