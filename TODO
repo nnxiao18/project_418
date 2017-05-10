@@ -1,0 +1,8 @@
+- Sequential AB
+- Version of sequential minimax/AB using move undoing instead of state copying
+  (this might be a lot faster?)
+- Parallel minimax w/ OpenMP
+- Naive parallel AB w/ OpenMP (global AB variables)
+- PVS
+* Better generalized tic-tac-toe ((n,n,k) instead of (n,n,n))
+* Win rate (with bounded time) testing harness
