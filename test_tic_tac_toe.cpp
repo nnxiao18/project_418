@@ -1,4 +1,5 @@
 #include <cassert>
+#include <climits>
 #include <iostream>
 
 #include "tic_tac_toe_game.h"
@@ -44,7 +45,6 @@ void test_x_win_vertical() {
     assert(g.status() == TicTacToeGame::kFirstPlayerWon);
     current_state = g.stateString();
     assert(current_state == XWV_TURN_5);
-    assert(g.leafEvalState() == 1);
     std::vector<TicTacToeMove> end_moves = {2, 5, 7, 8};
     assert(g.availableMoves() == end_moves);
 }
@@ -93,7 +93,6 @@ void test_o_win_horizontal() {
     assert(g.status() == TicTacToeGame::kSecondPlayerWon);
     current_state = g.stateString();
     assert(current_state == OWH_TURN_6);
-    assert(g.leafEvalState() == 0);
     std::vector<TicTacToeMove> end_moves = {1, 2, 8};
     assert(g.availableMoves() == end_moves);
 }
@@ -136,7 +135,6 @@ void test_x_win_diagonal1() {
     assert(g.status() == TicTacToeGame::kFirstPlayerWon);
     current_state = g.stateString();
     assert(current_state == XWD1_TURN_5);
-    assert(g.leafEvalState() == 4);
     std::vector<TicTacToeMove> end_moves = {1, 2, 3, 5};
     assert(g.availableMoves() == end_moves);
 }
@@ -185,7 +183,6 @@ void test_o_win_diagonal2() {
     assert(g.status() == TicTacToeGame::kSecondPlayerWon);
     current_state = g.stateString();
     assert(current_state == OWD2_TURN_6);
-    assert(g.leafEvalState() == -3);
     std::vector<TicTacToeMove> end_moves = {5, 7, 8};
     assert(g.availableMoves() == end_moves);
 }
