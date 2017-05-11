@@ -1,29 +1,30 @@
-#ifndef OMP_MINIMAX_LOCAL_SOLVER_H
-#define OMP_MINIMAX_LOCAL_SOLVER_H
+#ifndef OMP_LOCAL_MINIMAX_SOLVER_H
+#define OMP_LOCAL_MINIMAX_SOLVER_H
 
 #include "game_solver.h"
 
 #include <climits>
 #include <omp.h>
 
-// Computes minimax to specified depth in parallel (at top level) with OpenMP.
-// Improves upon the OmpMinimaxContentionSolver by having each thread keep
-// track of best_score, best_move as thread-local variables, then combining at
-// end to eliminate cache contention.
+// Uses top-level parallel (OpenMP) minimax to specified depth to evaluate
+// moves. Undoes moves instead of making game copies for memory efficiency.
+// Updates best_score and best_move in thread-local variables, then combines
+// into global, to reduce cache contention.
 template <class Game, int depth>
-class OmpMinimaxLocalSolver : public GameSolver<Game> {
+class OmpLocalMinimaxSolver : public GameSolver<Game> {
   static_assert(depth >= 1, "Depth must be >= 1");
   using GameSolver<Game>::game_;
   private:
     // Finds the best move for game with minimax evaluation up to plies, plays
     // it, and returns its minimax value.
     int playBestMoveForGame(Game& game, bool first_player_turn, int plies);
+    int evalState(Game& game, bool first_player_turn, int plies);
   public:
     virtual void playBestMove();
 };
 
 template <class Game, int depth>
-void OmpMinimaxLocalSolver<Game, depth>::playBestMove() {
+void OmpLocalMinimaxSolver<Game, depth>::playBestMove() {
     switch (game_.status()) {
         case Game::kFirstPlayerWon:
         case Game::kSecondPlayerWon:
@@ -40,7 +41,7 @@ void OmpMinimaxLocalSolver<Game, depth>::playBestMove() {
 }
 
 template <class Game, int depth>
-int OmpMinimaxLocalSolver<Game, depth>::playBestMoveForGame(
+int OmpLocalMinimaxSolver<Game, depth>::playBestMoveForGame(
         Game& game, bool first_player_turn, int plies) {
     const auto moves = game.availableMoves();
     int global_best_score = first_player_turn ? INT_MIN : INT_MAX;
@@ -49,20 +50,20 @@ int OmpMinimaxLocalSolver<Game, depth>::playBestMoveForGame(
     {
         int local_best_score = first_player_turn ? INT_MIN : INT_MAX;
         auto local_best_move = moves[0];
+        Game local_game = Game(game);
         #pragma omp for schedule(static)
         for (int i = 0; i < moves.size(); ++i) {
             auto m = moves[i];
-            Game game_copy = Game(game);
-            game_copy.playMove(m);
+            local_game.playMove(m);
             int score = 0;
-            switch (game_copy.status()) {
+            switch (local_game.status()) {
                 case Game::kFirstPlayerTurn:
                 case Game::kSecondPlayerTurn:
                     if (plies == 0) {
-                        score = game_copy.leafEvalState();
+                        score = local_game.leafEvalState();
                     } else {
-                        score = playBestMoveForGame(game_copy,
-                                !first_player_turn, plies - 1);
+                        score = evalState(local_game, !first_player_turn,
+                                plies - 1);
                     }
                     break;
                 case Game::kFirstPlayerWon:
@@ -87,7 +88,9 @@ int OmpMinimaxLocalSolver<Game, depth>::playBestMoveForGame(
                     local_best_move = m;
                 }
             }
+            local_game.undoMove(m);
         }
+        // Accumulate local best scores and moves to find global.
         if (first_player_turn) {
             #pragma omp critical
             {
@@ -96,8 +99,7 @@ int OmpMinimaxLocalSolver<Game, depth>::playBestMoveForGame(
                     global_best_move = local_best_move;
                 }
             }
-        }
-        else {
+        } else {
             #pragma omp critical
             {
                 if (local_best_score < global_best_score) {
@@ -111,4 +113,50 @@ int OmpMinimaxLocalSolver<Game, depth>::playBestMoveForGame(
     return global_best_score;
 }
 
-#endif  /* OMP_MINIMAX_LOCAL_SOLVER_H */
+template <class Game, int depth>
+int OmpLocalMinimaxSolver<Game, depth>::evalState(
+        Game& game, bool first_player_turn, int plies) {
+    auto moves = game.availableMoves();
+    int best_score = first_player_turn ? INT_MIN : INT_MAX;
+    for (auto m : moves) {
+        game.playMove(m);
+        int score = 0;
+        switch (game.status()) {
+            case Game::kFirstPlayerTurn:
+            case Game::kSecondPlayerTurn:
+                if (plies == 0) {
+                    score = game.leafEvalState();
+                } else {
+                    score = evalState(game, !first_player_turn, plies - 1);
+                }
+                break;
+            case Game::kFirstPlayerWon:
+                // TODO: If first_player_turn, could break out of for loop here
+                // because we know we can't do better than a winning move.
+                score = INT_MAX;
+                break;
+            case Game::kSecondPlayerWon:
+                // TODO: If !first_player_turn, could break out of for loop
+                // here because we know we can't do better than a winning move.
+                score = INT_MIN;
+                break;
+            case Game::kTie:
+                // TODO: Does this make sense? A tie is of neutral value?
+                score = 0;
+                break;
+        }
+        if (first_player_turn) {
+            if (score > best_score) {
+                best_score = score;
+            }
+        } else {
+            if (score < best_score) {
+                best_score = score;
+            }
+        }
+        game.undoMove(m);
+    }
+    return best_score;
+}
+
+#endif  /* OMP_LOCAL_MINIMAX_SOLVER_H */

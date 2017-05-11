@@ -8,7 +8,7 @@
 #include "sequential_alphabeta_solver.h"
 #include "sequential_nocopy_alphabeta_solver.h"
 #include "omp_contention_minimax_solver.h"
-#include "omp_minimax_local_solver.h"
+#include "omp_local_minimax_solver.h"
 
 #define REPEAT_TRIALS 10
 #define PLIES 9
@@ -53,10 +53,10 @@ int main() {
     runTrials(sncabs, "SEQUENTIAL (NO COPY) ALPHA-BETA");
 
     OmpContentionMinimaxSolver<TicTacToeGame, PLIES> ocms;
-    runTrials(ocms, "OPENMP (W/ CONTENTION) MINIMAX");
+    runTrials(ocms, "OPENMP (GLOBAL CONTENTION) MINIMAX");
 
-    OmpMinimaxLocalSolver<TicTacToeGame, PLIES> omls;
-    runTrials(omls, "OPENMP (THREAD-LOCAL) MINIMAX");
+    OmpLocalMinimaxSolver<TicTacToeGame, PLIES> olms;
+    runTrials(olms, "OPENMP (THREAD-LOCAL) MINIMAX");
 
     return 0;
 }
