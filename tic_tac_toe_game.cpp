@@ -1,5 +1,6 @@
 #include "tic_tac_toe_game.h"
 
+#include <climits>
 #include <iostream>
 
 std::vector<TicTacToeMove> TicTacToeGame::availableMoves() const {
@@ -15,69 +16,15 @@ std::vector<TicTacToeMove> TicTacToeGame::availableMoves() const {
 }
 
 TicTacToeGame::GameStatus TicTacToeGame::status() const {
-    const auto& board = current_state_.first;
-    // Check for horizontal wins.
-    for (int r = 0; r < BOARD_SIDE; ++r) {
-        SquareStatus first = board[r * BOARD_SIDE];
-        if (first != kEmpty) {
-            bool won = true;
-            for (int c = 1; c < BOARD_SIDE; ++c) {
-                if (board[r * BOARD_SIDE + c] != first) {
-                    won = false;
-                    break;
-                }
-            }
-            if (won) {
-                return first == kX ? kFirstPlayerWon : kSecondPlayerWon;
-            }
-        }
+    int leafEvalScore = leafEvalState();
+    if (leafEvalScore == INT_MAX) {
+        return kFirstPlayerWon;
     }
-    // Check for vertical wins.
-    for (int c = 0; c < BOARD_SIDE; ++c) {
-        SquareStatus first = board[c];
-        if (first != kEmpty) {
-            bool won = true;
-            for (int r = 1; r < BOARD_SIDE; ++r) {
-                if (board[r * BOARD_SIDE + c] != first) {
-                    won = false;
-                    break;
-                }
-            }
-            if (won) {
-                return first == kX ? kFirstPlayerWon : kSecondPlayerWon;
-            }
-        }
-    }
-    // Check for \ diagonal win.
-    SquareStatus first = board[0];
-    if (first != kEmpty) {
-        bool won = true;
-        for (int rc = 1; rc < BOARD_SIDE; ++rc) {
-            if (board[rc * BOARD_SIDE + rc] != first) {
-                won = false;
-                break;
-            }
-        }
-        if (won) {
-            return first == kX ? kFirstPlayerWon : kSecondPlayerWon;
-        }
-    }
-    // Check for / diagonal win.
-    first = board[BOARD_SIDE - 1];
-    if (first != kEmpty) {
-        bool won = true;
-        for (int rc = 1; rc < BOARD_SIDE; ++rc) {
-            if (board[rc * BOARD_SIDE + BOARD_SIDE - 1 - rc] != first) {
-                won = false;
-                break;
-            }
-        }
-        if (won) {
-            return first == kX ? kFirstPlayerWon : kSecondPlayerWon;
-        }
+    else if (leafEvalScore == INT_MIN) {
+        return kSecondPlayerWon;
     }
     // Check for empty squares.
-    for (SquareStatus s : board) {
+    for (SquareStatus s : current_state_.first) {
         if (s == kEmpty) {
             return current_state_.second ?
                     kFirstPlayerTurn : kSecondPlayerTurn;
@@ -87,35 +34,120 @@ TicTacToeGame::GameStatus TicTacToeGame::status() const {
     return kTie;
 }
 
-// Give 3 points for center, 2 for corners, 1 for sides.
 int TicTacToeGame::leafEvalState() const {
+    const auto& board = current_state_.first;
     int score = 0;
+    // Score rows.
     for (int r = 0; r < BOARD_SIDE; ++r) {
+        int count_x = 0;
+        int count_o = 0;
         for (int c = 0; c < BOARD_SIDE; ++c) {
-            int delta;
-            if (r == 1 && c == 1) {
-                // Center square.
-                delta = 3;
-            }
-            else if (r - c == 1 || c - r == 1) {
-                // Side (non-corner) square.
-                delta = 1;
-            }
-            else {
-                // Corner square.
-                delta = 2;
-            }
-            switch (current_state_.first[r * BOARD_SIDE + c]) {
-                case kEmpty:
-                    break;
+            switch (board[r * BOARD_SIDE + c]) {
                 case kX:
-                    score += delta;
+                    ++count_x;
                     break;
                 case kO:
-                    score -= delta;
+                    ++count_o;
+                    break;
+                default:
                     break;
             }
         }
+        if (count_o == 0) {
+            if (count_x == BOARD_SIDE) {
+                return INT_MAX;
+            }
+            score += count_x;
+        }
+        else if (count_x == 0) {
+            if (count_o == BOARD_SIDE) {
+                return INT_MIN;
+            }
+            score -= count_o;
+        }
+    }
+    // Score columns.
+    for (int c = 0; c < BOARD_SIDE; ++c) {
+        int count_x = 0;
+        int count_o = 0;
+        for (int r = 0; r < BOARD_SIDE; ++r) {
+            switch (board[r * BOARD_SIDE + c]) {
+                case kX:
+                    ++count_x;
+                    break;
+                case kO:
+                    ++count_o;
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (count_o == 0) {
+            if (count_x == BOARD_SIDE) {
+                return INT_MAX;
+            }
+            score += count_x;
+        }
+        else if (count_x == 0) {
+            if (count_o == BOARD_SIDE) {
+                return INT_MIN;
+            }
+            score -= count_o;
+        }
+    }
+    // Score \ diagonal.
+    int count_x = 0;
+    int count_o = 0;
+    for (int rc = 0; rc < BOARD_SIDE; ++rc) {
+        switch (board[rc * BOARD_SIDE + rc]) {
+            case kX:
+                ++count_x;
+                break;
+            case kO:
+                ++count_o;
+                break;
+            default:
+                break;
+        }
+    }
+    if (count_o == 0) {
+        if (count_x == BOARD_SIDE) {
+            return INT_MAX;
+        }
+        score += count_x;
+    }
+    else if (count_x == 0) {
+        if (count_o == BOARD_SIDE) {
+            return INT_MIN;
+        }
+        score -= count_o;
+    }
+    // Score / diagonal.
+    count_x = 0;
+    count_o = 0;
+    for (int rc = 0; rc < BOARD_SIDE; ++rc) {
+        switch (board[rc * BOARD_SIDE + BOARD_SIDE - 1 - rc]) {
+            case kX:
+                ++count_x;
+                break;
+            case kO:
+                ++count_o;
+                break;
+            default:
+                break;
+        }
+    }
+    if (count_o == 0) {
+        if (count_x == BOARD_SIDE) {
+            return INT_MAX;
+        }
+        score += count_x;
+    }
+    else if (count_x == 0) {
+        if (count_o == BOARD_SIDE) {
+            return INT_MIN;
+        }
+        score -= count_o;
     }
     return score;
 }

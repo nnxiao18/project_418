@@ -13,7 +13,7 @@
 #include "omp_local_alphabeta_solver.h"
 
 #define REPEAT_TRIALS 1
-#define PLIES 9
+#define PLIES 4
 // TODO: Tightly coupled with the size of the tic-tac-toe board. Very bad. Ugh.
 #define TURNS 1
 
