@@ -12,6 +12,8 @@
 
 #define REPEAT_TRIALS 10
 #define PLIES 9
+// TODO: Tightly coupled with the size of the tic-tac-toe board. Very bad. Ugh.
+#define TURNS 9
 
 void runTrials(GameSolver<TicTacToeGame>& solver, const char* name) {
     std::cout << "----- " << name << " -----" << std::endl;
@@ -20,7 +22,7 @@ void runTrials(GameSolver<TicTacToeGame>& solver, const char* name) {
     for (int trial = 0; trial < REPEAT_TRIALS; ++trial) {
         solver.resetState();
         double trial_start = CycleTimer::currentSeconds();
-        for (int i = 0; i < 9; ++i) {
+        for (int i = 0; i < TURNS; ++i) {
             solver.playBestMove();
         }
         double trial_end = CycleTimer::currentSeconds();
