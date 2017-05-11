@@ -1,4 +1,3 @@
-- Naive parallel AB w/ OpenMP (global AB variables)
 - Make sure stuff works on latedays!!!
 - PVS
 * Better generalized tic-tac-toe ((n,n,k) instead of (n,n,n))
