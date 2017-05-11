@@ -17,6 +17,8 @@ class SequentialNoCopyAlphaBetaSolver : public GameSolver<Game> {
     // bounds up to plies, plays it, and returns its minimax value.
     int playBestMoveForGame(Game& game, bool first_player_turn, int plies, int
             alpha, int beta);
+    int evalState(Game& game, bool first_player_turn, int plies, int alpha, int
+            beta);
   public:
     virtual void playBestMove();
 };
@@ -53,8 +55,8 @@ int SequentialNoCopyAlphaBetaSolver<Game, depth>::playBestMoveForGame(
                 if (plies == 0) {
                     score = game.leafEvalState();
                 } else {
-                    score = playBestMoveForGame(game, !first_player_turn,
-                            plies - 1, alpha, beta);
+                    score = evalState(game, !first_player_turn, plies - 1,
+                            alpha, beta);
                 }
                 break;
             case Game::kFirstPlayerWon:
@@ -96,6 +98,63 @@ int SequentialNoCopyAlphaBetaSolver<Game, depth>::playBestMoveForGame(
         game.undoMove(m);
     }
     game.playMove(best_move);
+    return best_score;
+}
+
+template <class Game, int depth>
+int SequentialNoCopyAlphaBetaSolver<Game, depth>::evalState(
+        Game& game, bool first_player_turn, int plies, int alpha, int beta) {
+    auto moves = game.availableMoves();
+    int best_score = first_player_turn ? INT_MIN : INT_MAX;
+    for (auto m : moves) {
+        game.playMove(m);
+        int score = 0;
+        switch (game.status()) {
+            case Game::kFirstPlayerTurn:
+            case Game::kSecondPlayerTurn:
+                if (plies == 0) {
+                    score = game.leafEvalState();
+                } else {
+                    score = evalState(game, !first_player_turn, plies - 1,
+                            alpha, beta);
+                }
+                break;
+            case Game::kFirstPlayerWon:
+                score = INT_MAX;
+                break;
+            case Game::kSecondPlayerWon:
+                score = INT_MIN;
+                break;
+            case Game::kTie:
+                // TODO: Does this make sense? A tie is of neutral value?
+                score = 0;
+                break;
+        }
+        if (first_player_turn) {
+            if (score > best_score) {
+                best_score = score;
+            }
+            if (score > alpha) {
+                alpha = score;
+                if (alpha >= beta) {
+                    game.undoMove(m);
+                    break;  // Prune
+                }
+            }
+        } else {
+            if (score < best_score) {
+                best_score = score;
+            }
+            if (score < beta) {
+                beta = score;
+                if (beta <= alpha) {
+                    game.undoMove(m);
+                    break;  // Prune
+                }
+            }
+        }
+        game.undoMove(m);
+    }
     return best_score;
 }
 
