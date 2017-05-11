@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -c -Wall -Wextra -O2 -std=c++11 -fopenmp
+CFLAGS = -c -Wall -Wextra -O3 -std=c++11 -fopenmp
 LFLAGS = -Wall -fopenmp -lpthread
 DEBUG = -g
 OBJS = tic_tac_toe_game.o main.o
