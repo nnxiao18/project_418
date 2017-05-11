@@ -34,6 +34,8 @@ class TicTacToeGame : public Game<TicTacToeState, TicTacToeMove> {
     // the current state can get you into an invalid game state.
     virtual void playMove(TicTacToeMove move);
     virtual void resetState();
+    // Just makes the specified square kEmpty.
+    virtual void undoMove(TicTacToeMove move);
     // Get a text representation of the game state, for testing and debugging.
     std::string stateString() const;
 };

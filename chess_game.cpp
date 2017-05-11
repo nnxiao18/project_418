@@ -27,3 +27,8 @@ void ChessGame::resetState() {
     current_state_ = 0;
     return;
 }
+
+void ChessGame::undoMove(ChessMove move) {
+    move += 5;
+    return;
+}

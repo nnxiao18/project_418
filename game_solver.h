@@ -19,6 +19,10 @@ class GameSolver {
     GameSolver() = default;
     // Determines and plays the best move for the current state.
     virtual void playBestMove() = 0;
+    // Reset game_ using its resetState function.
+    void resetState() {
+        game_.resetState();
+    }
 };
 
 #endif  /* GAME_SOLVER_H */

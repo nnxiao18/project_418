@@ -137,6 +137,11 @@ void TicTacToeGame::resetState() {
     return;
 }
 
+void TicTacToeGame::undoMove(TicTacToeMove move) {
+    current_state_.first[move] = kEmpty;
+    current_state_.second = !current_state_.second;
+}
+
 std::string TicTacToeGame::stateString() const {
     std::string state_string;
     if (current_state_.second) {

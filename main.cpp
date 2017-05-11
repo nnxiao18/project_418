@@ -4,52 +4,48 @@
 #include "tic_tac_toe_game.h"
 #include "heuristic_solver.h"
 #include "sequential_minimax_solver.h"
+#include "sequential_nocopy_minimax_solver.h"
 #include "sequential_alphabeta_solver.h"
+#include "sequential_nocopy_alphabeta_solver.h"
 
 #define REPEAT_TRIALS 10
 
-int main() {
-    std::cout << "----- HEURISTIC -----" << std::endl;
+void runTrials(GameSolver<TicTacToeGame>& solver, const char* name) {
+    std::cout << "----- " << name << " -----" << std::endl;
     double total_time = 0;
+    std::cout << "Completed trials: ";
     for (int trial = 0; trial < REPEAT_TRIALS; ++trial) {
-        HeuristicSolver<TicTacToeGame> hs;
+        solver.resetState();
         double trial_start = CycleTimer::currentSeconds();
         for (int i = 0; i < 9; ++i) {
-            hs.playBestMove();
+            solver.playBestMove();
         }
         double trial_end = CycleTimer::currentSeconds();
         total_time += trial_end - trial_start;
-        std::cout << "Trial " << trial << std::endl;
+        if (trial > 0) {
+            std::cout << ", ";
+        }
+        std::cout << trial;
     }
+    std::cout << std::endl;
     std::cout << "Seconds elapsed playing moves: " << total_time << std::endl;
+}
 
-    std::cout << "----- SEQUENTIAL MINIMAX -----" << std::endl;
-    total_time = 0;
-    for (int trial = 0; trial < REPEAT_TRIALS; ++trial) {
-        SequentialMinimaxSolver<TicTacToeGame, 9> sms;
-        double trial_start = CycleTimer::currentSeconds();
-        for (int i = 0; i < 9; ++i) {
-            sms.playBestMove();
-        }
-        double trial_end = CycleTimer::currentSeconds();
-        total_time += trial_end - trial_start;
-        std::cout << "Trial " << trial << std::endl;
-    }
-    std::cout << "Seconds elapsed playing moves: " << total_time << std::endl;
+int main() {
+    HeuristicSolver<TicTacToeGame> hs;
+    runTrials(hs, "HEURISTIC");
 
-    std::cout << "----- SEQUENTIAL ALPHA-BETA -----" << std::endl;
-    total_time = 0;
-    for (int trial = 0; trial < REPEAT_TRIALS; ++trial) {
-        SequentialAlphaBetaSolver<TicTacToeGame, 9> sabs;
-        double trial_start = CycleTimer::currentSeconds();
-        for (int i = 0; i < 9; ++i) {
-            sabs.playBestMove();
-        }
-        double trial_end = CycleTimer::currentSeconds();
-        total_time += trial_end - trial_start;
-        std::cout << "Trial " << trial << std::endl;
-    }
-    std::cout << "Seconds elapsed playing moves: " << total_time << std::endl;
+    SequentialMinimaxSolver<TicTacToeGame, 9> sms;
+    runTrials(sms, "SEQUENTIAL MINIMAX");
+
+    SequentialNoCopyMinimaxSolver<TicTacToeGame, 9> sncms;
+    runTrials(sncms, "SEQUENTIAL (NO COPY) MINIMAX");
+
+    SequentialAlphaBetaSolver<TicTacToeGame, 9> sabs;
+    runTrials(sabs, "SEQUENTIAL ALPHA-BETA");
+
+    SequentialNoCopyAlphaBetaSolver<TicTacToeGame, 9> sncabs;
+    runTrials(sncabs, "SEQUENTIAL (NO COPY) ALPHA-BETA");
 
     return 0;
 }

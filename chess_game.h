@@ -17,6 +17,7 @@ class ChessGame : public Game<ChessState, ChessMove> {
     virtual int leafEvalState() const;
     virtual void playMove(ChessMove move);
     virtual void resetState();
+    virtual void undoMove(ChessMove move);
 };
 
 #endif  /* CHESS_GAME_H */

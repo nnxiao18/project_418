@@ -32,6 +32,8 @@ class Game {
     virtual void playMove(Move move) = 0;
     // Resets the current state to the initial state.
     virtual void resetState() = 0;
+    // Undoes an already played move to update the current state of the game.
+    virtual void undoMove(Move move) = 0;
 };
 
 #endif  /* GAME_H */
