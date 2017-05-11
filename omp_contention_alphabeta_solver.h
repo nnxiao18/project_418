@@ -2,6 +2,7 @@
 #define OMP_CONTENTION_ALPHABETA_SOLVER_H
 
 #include "game_solver.h"
+#include "cycle_timer.h"
 
 #include <climits>
 
@@ -46,8 +47,10 @@ int OmpContentionAlphaBetaSolver<Game, depth>::playBestMoveForGame(
     auto moves = game.availableMoves();
     int best_score = first_player_turn ? INT_MIN : INT_MAX;
     auto best_move = moves[0];
+    double start = CycleTimer::currentSeconds();
     #pragma omp parallel
     {
+        double startTime  = CycleTimer::currentSeconds();
         Game local_game = Game(game);
         #pragma omp for schedule(static)
         for (int i = 0; i < moves.size(); ++i) {
@@ -98,7 +101,11 @@ int OmpContentionAlphaBetaSolver<Game, depth>::playBestMoveForGame(
             }
             local_game.undoMove(m);
         }
+        double endTime = CycleTimer::currentSeconds();
+        printf("Thread %d: %.3f ms\n", omp_get_thread_num(), 1000.f * (endTime - startTime));
     }
+    double end = CycleTimer::currentSeconds();
+    printf("Overall time to find best move w/ plies(%d): %.3f ms\n", plies, 1000.f * (end - start));
     game.playMove(best_move);
     return best_score;
 }

@@ -46,12 +46,14 @@ int OmpLocalAlphaBetaSolver<Game, depth>::playBestMoveForGame(
     auto moves = game.availableMoves();
     int global_best_score = first_player_turn ? INT_MIN : INT_MAX;
     auto global_best_move = moves[0];
+    double start = CycleTimer::currentSeconds();
     #pragma omp parallel
     {
         int local_best_score = first_player_turn ? INT_MIN : INT_MAX;
         auto local_best_move = moves[0];
         int local_alpha = alpha;
         int local_beta = beta;
+        double startTime = CycleTimer::currentSeconds();
         Game local_game = Game(game);
         #pragma omp for schedule(static)
         for (int i = 0; i < moves.size(); ++i) {
@@ -95,6 +97,7 @@ int OmpLocalAlphaBetaSolver<Game, depth>::playBestMoveForGame(
                 }
             }
             local_game.undoMove(m);
+
         }
         // Accumulate local best scores and moves to find global.
         if (first_player_turn) {
@@ -114,7 +117,11 @@ int OmpLocalAlphaBetaSolver<Game, depth>::playBestMoveForGame(
                 }
             }
         }
+        double endTime = CycleTimer::currentSeconds();
+        printf("Thread %d: %.3f ms\n", omp_get_thread_num(), 1000.f * (endTime - startTime));
     }
+    double end = CycleTimer::currentSeconds();
+    printf("Overall: %.3f ms\n", 1000.f * (end - start));
     game.playMove(global_best_move);
     return global_best_score;
 }

@@ -12,10 +12,10 @@
 #include "omp_contention_alphabeta_solver.h"
 #include "omp_local_alphabeta_solver.h"
 
-#define REPEAT_TRIALS 10
+#define REPEAT_TRIALS 1
 #define PLIES 9
 // TODO: Tightly coupled with the size of the tic-tac-toe board. Very bad. Ugh.
-#define TURNS 9
+#define TURNS 1
 
 void runTrials(GameSolver<TicTacToeGame>& solver, const char* name) {
     std::cout << "----- " << name << " -----" << std::endl;
