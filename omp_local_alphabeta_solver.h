@@ -1,15 +1,15 @@
-#ifndef OMP_CONTENTION_ALPHABETA_SOLVER_H
-#define OMP_CONTENTION_ALPHABETA_SOLVER_H
+#ifndef OMP_LOCAL_ALPHABETA_SOLVER_H
+#define OMP_LOCAL_ALPHABETA_SOLVER_H
 
 #include "game_solver.h"
 
 #include <climits>
 
 // Uses top-level parallel (OpenMP) minimax to specified depth with
-// alpha-beta pruning to evaluate moves, updating global best_score, best_move,
-// and alpha-beta values (should lead to significant contention). No-copy.
+// alpha-beta pruning to evaluate moves, updating thread-local alpha-beta
+// values to reduce contention. No-copy.
 template <class Game, int depth>
-class OmpContentionAlphaBetaSolver : public GameSolver<Game> {
+class OmpLocalAlphaBetaSolver : public GameSolver<Game> {
   static_assert(depth >= 1, "Depth must be >= 1");
   using GameSolver<Game>::game_;
   private:
@@ -24,7 +24,7 @@ class OmpContentionAlphaBetaSolver : public GameSolver<Game> {
 };
 
 template <class Game, int depth>
-void OmpContentionAlphaBetaSolver<Game, depth>::playBestMove() {
+void OmpLocalAlphaBetaSolver<Game, depth>::playBestMove() {
     switch (game_.status()) {
         case Game::kFirstPlayerWon:
         case Game::kSecondPlayerWon:
@@ -41,13 +41,17 @@ void OmpContentionAlphaBetaSolver<Game, depth>::playBestMove() {
 }
 
 template <class Game, int depth>
-int OmpContentionAlphaBetaSolver<Game, depth>::playBestMoveForGame(
+int OmpLocalAlphaBetaSolver<Game, depth>::playBestMoveForGame(
         Game& game, bool first_player_turn, int plies, int alpha, int beta) {
     auto moves = game.availableMoves();
-    int best_score = first_player_turn ? INT_MIN : INT_MAX;
-    auto best_move = moves[0];
+    int global_best_score = first_player_turn ? INT_MIN : INT_MAX;
+    auto global_best_move = moves[0];
     #pragma omp parallel
     {
+        int local_best_score = first_player_turn ? INT_MIN : INT_MAX;
+        auto local_best_move = moves[0];
+        int local_alpha = alpha;
+        int local_beta = beta;
         Game local_game = Game(game);
         #pragma omp for schedule(static)
         for (int i = 0; i < moves.size(); ++i) {
@@ -61,7 +65,7 @@ int OmpContentionAlphaBetaSolver<Game, depth>::playBestMoveForGame(
                         score = local_game.leafEvalState();
                     } else {
                         score = evalState(local_game, !first_player_turn,
-                                plies - 1, alpha, beta);
+                                plies - 1, local_alpha, local_beta);
                     }
                     break;
                 case Game::kFirstPlayerWon:
@@ -76,35 +80,47 @@ int OmpContentionAlphaBetaSolver<Game, depth>::playBestMoveForGame(
                     break;
             }
             if (first_player_turn) {
-                #pragma omp critical
-                {
-                    if (score > best_score) {
-                        best_score = score;
-                        best_move = m;
-                        alpha = best_score;
-                        // At top level, don't have to consider pruning.
-                    }
+                if (score > local_best_score) {
+                    local_best_score = score;
+                    local_best_move = m;
+                    local_alpha = local_best_score;
+                    // At top level, don't have to consider pruning.
                 }
             } else {
-                #pragma omp critical
-                {
-                    if (score < best_score) {
-                        best_score = score;
-                        best_move = m;
-                        beta = best_score;
-                        // At top level, don't have to consider pruning.
-                    }
+                if (score < local_best_score) {
+                    local_best_score = score;
+                    local_best_move = m;
+                    local_beta = local_best_score;
+                    // At top level, don't have to consider pruning.
                 }
             }
             local_game.undoMove(m);
         }
+        // Accumulate local best scores and moves to find global.
+        if (first_player_turn) {
+            #pragma omp critical
+            {
+                if (local_best_score > global_best_score) {
+                    global_best_score = local_best_score;
+                    global_best_move = local_best_move;
+                }
+            }
+        } else {
+            #pragma omp critical
+            {
+                if (local_best_score < global_best_score) {
+                    global_best_score = local_best_score;
+                    global_best_move = local_best_move;
+                }
+            }
+        }
     }
-    game.playMove(best_move);
-    return best_score;
+    game.playMove(global_best_move);
+    return global_best_score;
 }
 
 template <class Game, int depth>
-int OmpContentionAlphaBetaSolver<Game, depth>::evalState(
+int OmpLocalAlphaBetaSolver<Game, depth>::evalState(
         Game& game, bool first_player_turn, int plies, int alpha, int beta) {
     auto moves = game.availableMoves();
     int best_score = first_player_turn ? INT_MIN : INT_MAX;
@@ -160,4 +176,4 @@ int OmpContentionAlphaBetaSolver<Game, depth>::evalState(
     return best_score;
 }
 
-#endif  /* OMP_CONTENTION_ALPHABETA_SOLVER_H */
+#endif  /* OMP_LOCAL_ALPHABETA_SOLVER_H */
