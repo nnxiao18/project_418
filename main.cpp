@@ -11,6 +11,7 @@
 #include "omp_minimax_local_solver.h"
 
 #define REPEAT_TRIALS 10
+#define PLIES 9
 
 void runTrials(GameSolver<TicTacToeGame>& solver, const char* name) {
     std::cout << "----- " << name << " -----" << std::endl;
@@ -37,22 +38,22 @@ int main() {
     HeuristicSolver<TicTacToeGame> hs;
     runTrials(hs, "HEURISTIC");
 
-    SequentialMinimaxSolver<TicTacToeGame, 9> sms;
+    SequentialMinimaxSolver<TicTacToeGame, PLIES> sms;
     runTrials(sms, "SEQUENTIAL MINIMAX");
 
-    SequentialNoCopyMinimaxSolver<TicTacToeGame, 9> sncms;
+    SequentialNoCopyMinimaxSolver<TicTacToeGame, PLIES> sncms;
     runTrials(sncms, "SEQUENTIAL (NO COPY) MINIMAX");
 
-    SequentialAlphaBetaSolver<TicTacToeGame, 9> sabs;
+    SequentialAlphaBetaSolver<TicTacToeGame, PLIES> sabs;
     runTrials(sabs, "SEQUENTIAL ALPHA-BETA");
 
-    SequentialNoCopyAlphaBetaSolver<TicTacToeGame, 9> sncabs;
+    SequentialNoCopyAlphaBetaSolver<TicTacToeGame, PLIES> sncabs;
     runTrials(sncabs, "SEQUENTIAL (NO COPY) ALPHA-BETA");
 
-    OmpMinimaxContentionSolver<TicTacToeGame, 9> omcs;
+    OmpMinimaxContentionSolver<TicTacToeGame, PLIES> omcs;
     runTrials(omcs, "OPENMP (W/ CONTENTION) MINIMAX");
 
-    OmpMinimaxLocalSolver<TicTacToeGame, 9> omls;
+    OmpMinimaxLocalSolver<TicTacToeGame, PLIES> omls;
     runTrials(omls, "OPENMP (THREAD-LOCAL) MINIMAX");
 
     return 0;

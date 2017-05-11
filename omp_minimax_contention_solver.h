@@ -77,14 +77,20 @@ int OmpMinimaxContentionSolver<Game, depth>::playBestMoveForGame(
                 break;
         }
         if (first_player_turn) {
-            if (score > best_score) {
-                best_score = score;
-                best_move = m;
+            #pragma omp critical
+            {
+                if (score > best_score) {
+                    best_score = score;
+                    best_move = m;
+                }
             }
         } else {
-            if (score < best_score) {
-                best_score = score;
-                best_move = m;
+            #pragma omp critical
+            {
+                if (score < best_score) {
+                    best_score = score;
+                    best_move = m;
+                }
             }
         }
     }
