@@ -46,6 +46,7 @@ int OmpLocalAlphaBetaSolver<Game, depth>::playBestMoveForGame(
     auto moves = game.availableMoves();
     int global_best_score = first_player_turn ? INT_MIN : INT_MAX;
     auto global_best_move = moves[0];
+    bool found_winning_move = false;
     #pragma omp parallel
     {
         int local_best_score = first_player_turn ? INT_MIN : INT_MAX;
@@ -55,6 +56,9 @@ int OmpLocalAlphaBetaSolver<Game, depth>::playBestMoveForGame(
         Game local_game = Game(game);
         #pragma omp for schedule(static)
         for (int i = 0; i < moves.size(); ++i) {
+            if (found_winning_move) {
+                continue;
+            }
             const auto& m = moves[i];
             local_game.playMove(m);
             int score = 0;
@@ -69,11 +73,19 @@ int OmpLocalAlphaBetaSolver<Game, depth>::playBestMoveForGame(
                     }
                     break;
                 case Game::kFirstPlayerWon:
-                    // Leave the move done; we want to do this winning move.
-                    return INT_MAX;
+                    best_score = INT_MAX;
+                    best_move = m;
+                    found_winning_move = true;
+                    // No need for local_game.undoMove(m); we won't be trying
+                    // any other moves on it.
+                    continue;
                 case Game::kSecondPlayerWon:
-                    // Leave the move done; we want to do this winning move.
-                    return INT_MIN;
+                    best_score = INT_MIN;
+                    best_move = m;
+                    found_winning_move = true;
+                    // No need for local_game.undoMove(m); we won't be trying
+                    // any other moves on it.
+                    continue;
                 case Game::kTie:
                     // TODO: Does this make sense? A tie is of neutral value?
                     score = 0;

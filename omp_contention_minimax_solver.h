@@ -67,14 +67,18 @@ int OmpContentionMinimaxSolver<Game, depth>::playBestMoveForGame(
                     }
                     break;
                 case Game::kFirstPlayerWon:
-                    // Leave the move done; we want to do this winning move.
                     best_score = INT_MAX;
+                    best_move = m;
                     found_winning_move = true;
+                    // No need for local_game.undoMove(m); we won't be trying
+                    // any other moves on it.
                     continue;
                 case Game::kSecondPlayerWon:
-                    // Leave the move done; we want to do this winning move.
                     best_score = INT_MIN;
+                    best_move = m;
                     found_winning_move = true;
+                    // No need for local_game.undoMove(m); we won't be trying
+                    // any other moves on it.
                     continue;
                 case Game::kTie:
                     // TODO: Does this make sense? A tie is of neutral value?
