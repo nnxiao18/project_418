@@ -15,6 +15,7 @@
 #include "pvs_rand_contention_alphabeta_solver.h"
 #include "pvs_local_alphabeta_solver.h"
 #include "pvs_rand_local_alphabeta_solver.h"
+#include "pvs_heur_contention_alphabeta_solver.h"
 
 #define REPEAT_TRIALS 1
 #define PLIES 3
@@ -88,6 +89,9 @@ int main() {
 
     PVSRandLocalAlphaBetaSolver<GomokuGame, PLIES> prlabs;
     runTrials(plabs, "PVS (RAND, THREAD-LOCAL) ALPHA-BETA");
+
+    PVSHeurContentionAlphaBetaSolver<GomokuGame, PLIES> phcabs;
+    runTrials(plabs, "PVS (HEUR, GLOBAL CONTENTION) ALPHA-BETA");
 
     return 0;
 }

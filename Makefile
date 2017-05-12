@@ -29,7 +29,8 @@ main.o: main.cpp cycle_timer.h gomoku_game.h heuristic_solver.h \
 		omp_contention_minimax_solver.h omp_local_minimax_solver.h \
 		omp_contention_alphabeta_solver.h omp_local_alphabeta_solver.h \
 		pvs_contention_alphabeta_solver.h pvs_local_alphabeta_solver.h \
-		pvs_rand_contention_alphabeta_solver.h pvs_rand_local_alphabeta_solver.h
+		pvs_rand_contention_alphabeta_solver.h pvs_rand_local_alphabeta_solver.h \
+		pvs_heur_contention_alphabeta_solver.h
 	$(CC) main.cpp $(CFLAGS)
 
 .PHONY: clean
