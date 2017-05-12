@@ -75,7 +75,7 @@ int PVSRandLocalAlphaBetaSolver<Game, depth>::playBestMoveForGame(
         int local_beta = beta;
         Game local_game = Game(game);
         #pragma omp for schedule(static)
-        for (int i = 0; i < moves.size(); ++i) {
+        for (size_t i = 0; i < moves.size(); ++i) {
             if (found_winning_move){ continue;}
             const auto& m = moves[i];
             local_game.playMove(m);

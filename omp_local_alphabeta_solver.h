@@ -55,7 +55,7 @@ int OmpLocalAlphaBetaSolver<Game, depth>::playBestMoveForGame(
         int local_beta = beta;
         Game local_game = Game(game);
         #pragma omp for schedule(static)
-        for (int i = 0; i < moves.size(); ++i) {
+        for (size_t i = 0; i < moves.size(); ++i) {
             if (found_winning_move) {
                 continue;
             }
