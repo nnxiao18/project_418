@@ -133,7 +133,7 @@ void GomokuGame::resetState() {
     current_state_.first[7 * BOARD_SIDE + 11]=kX;
     current_state_.first[7 * BOARD_SIDE + 5]=kO;
     current_state_.first[7 * BOARD_SIDE + 6]=kX;
-    current_state_.first[7 * BOARD_SIDE + 8]=kX
+    current_state_.first[7 * BOARD_SIDE + 8]=kX;
     current_state_.first[7 * BOARD_SIDE + 9]=kO;
 
     current_state_.first[8 * BOARD_SIDE + 5]=kX;
