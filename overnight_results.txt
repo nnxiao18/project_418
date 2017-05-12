@@ -1,0 +1,58 @@
+BOARD_SIDE=15
+K_IN_ROW=5
+REPEATS_TRIALS=1
+PLIES=3
+TURNS=20
+
+----- HEURISTIC -----
+Completed trials: 0
+Seconds elapsed playing moves: 0.00424071
+
+----- SEQUENTIAL MINIMAX -----
+Completed trials: 0
+Seconds elapsed playing moves: 159.284
+
+----- SEQUENTIAL (NO COPY) MINIMAX -----
+Completed trials: 0
+Seconds elapsed playing moves: 157.085
+
+----- SEQUENTIAL ALPHA-BETA -----
+Completed trials: 0
+Seconds elapsed playing moves: 15.6191
+
+----- SEQUENTIAL (NO COPY) ALPHA-BETA -----
+Completed trials: 0
+Seconds elapsed playing moves: 15.3552
+
+----- OPENMP (GLOBAL CONTENTION) MINIMAX -----
+Completed trials: 0
+Seconds elapsed playing moves: 17.3758
+
+----- OPENMP (THREAD-LOCAL) MINIMAX -----
+Completed trials: 0
+Seconds elapsed playing moves: 13.0621
+
+----- OPENMP (GLOBAL CONTENTION) ALPHA-BETA -----
+Completed trials: 0
+Seconds elapsed playing moves: 2.88516
+
+----- OPENMP (THREAD-LOCAL) ALPHA-BETA -----
+Completed trials: 0
+Seconds elapsed playing moves: 5.48516
+
+----- PVS (GLOBAL CONTENTION) ALPHA-BETA -----
+Completed trials: 0
+Seconds elapsed playing moves: 6.61633
+
+----- PVS (RAND, GLOBAL CONTENTION) ALPHA-BETA -----
+Completed trials: 0
+Seconds elapsed playing moves: 3.88735
+
+----- PVS (THREAD-LOCAL) ALPHA-BETA -----
+Completed trials: 0
+Seconds elapsed playing moves: 3.65081
+
+----- PVS (RAND, THREAD-LOCAL) ALPHA-BETA -----
+Completed trials: 0
+Seconds elapsed playing moves: 6.02692
+

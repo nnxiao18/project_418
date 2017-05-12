@@ -81,6 +81,6 @@ int main() {
     runTrials(plabs, "PVS (THREAD-LOCAL) ALPHA-BETA");
 
     PVSRandLocalAlphaBetaSolver<GomokuGame, PLIES> prlabs;
-    runTrials(plabs, "PVS (RAND, GLOBAL CONTENTION) ALPHA-BETA");
+    runTrials(plabs, "PVS (RAND, THREAD-LOCAL) ALPHA-BETA");
     return 0;
 }
