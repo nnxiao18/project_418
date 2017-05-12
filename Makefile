@@ -27,7 +27,8 @@ main.o: main.cpp cycle_timer.h gomoku_game.h heuristic_solver.h \
 		sequential_minimax_solver.h sequential_nocopy_minimax_solver.h \
 		sequential_alphabeta_solver.h sequential_nocopy_alphabeta_solver.h \
 		omp_contention_minimax_solver.h omp_local_minimax_solver.h \
-		omp_contention_alphabeta_solver.h omp_local_alphabeta_solver.h 
+		omp_contention_alphabeta_solver.h omp_local_alphabeta_solver.h \
+		pvs_contention_alphabeta_solver.h pvs_local_alphabeta_solver.h
 	$(CC) main.cpp $(CFLAGS)
 
 .PHONY: clean
