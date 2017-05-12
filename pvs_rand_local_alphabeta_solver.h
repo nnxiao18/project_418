@@ -1,5 +1,5 @@
-#ifndef PVS__CONTENTION_ALPHABETA_SOLVER_H
-#define PVS_CONTENTION_ALPHABETA_SOLVER_H
+#ifndef PVS__LOCAL_ALPHABETA_SOLVER_H
+#define PVS_LOCAL_ALPHABETA_SOLVER_H
 
 #include "game_solver.h"
 
@@ -10,7 +10,7 @@
 // alpha-beta pruning to evaluate moves, updating thread-local alpha-beta
 // values to reduce contention. No-copy. PVS
 template <class Game, int depth>
-class PVSRandContentionAlphaBetaSolver : public GameSolver<Game> {
+class PVSRandLocalAlphaBetaSolver : public GameSolver<Game> {
   static_assert(depth >= 1, "Depth must be >= 1");
   using GameSolver<Game>::game_;
   private:
@@ -26,7 +26,7 @@ class PVSRandContentionAlphaBetaSolver : public GameSolver<Game> {
 };
 
 template <class Game, int depth>
-void PVSRandContentionAlphaBetaSolver<Game, depth>::playBestMove() {
+void PVSRandLocalAlphaBetaSolver<Game, depth>::playBestMove() {
     switch (game_.status()) {
         case Game::kFirstPlayerWon:
         case Game::kSecondPlayerWon:
@@ -43,45 +43,49 @@ void PVSRandContentionAlphaBetaSolver<Game, depth>::playBestMove() {
 }
 
 template <class Game, int depth>
-int PVSRandContentionAlphaBetaSolver<Game, depth>::playBestMoveForGame(
+int PVSRandLocalAlphaBetaSolver<Game, depth>::playBestMoveForGame(
         Game& game, bool first_player_turn, int plies, int alpha, int beta) {
     auto moves = game.availableMoves();
     size_t num_moves = moves.size();
     int r = rand() % num_moves;
     //std::cout << "playBestMoveForGame plies: " << plies << "\n";
-    auto best_move = moves[r];
-    game.playMove(best_move);
-    int best_score;
+    auto global_best_move = moves[r];
+    game.playMove(global_best_move);
+    int global_best_score;
     if (plies == 0) {
-        best_score = game.leafEvalState();
+        global_best_score = game.leafEvalState();
     } else {
-        best_score = PVSplit(game, first_player_turn, plies-1, alpha, beta);
+        global_best_score = PVSplit(game, first_player_turn, plies-1, alpha, beta);
     }
     //printf("huh\n");
     if (first_player_turn) {
-        if (best_score > alpha) alpha = best_score;
+        if (global_best_score > alpha) alpha = global_best_score;
     } else {
-        if (best_score < beta) beta = best_score;
+        if (global_best_score < beta) beta = global_best_score;
     }
 
     game.undoMove(moves[r]);
     moves.erase(moves.begin() + r);
     #pragma omp parallel
     {
+        int local_best_score = first_player_turn ? INT_MIN : INT_MAX;
+        auto local_best_move = moves[1];
+        int local_alpha = alpha;
+        int local_beta = beta;
         Game local_game = Game(game);
         #pragma omp for schedule(static)
         for (int i = 0; i < moves.size(); ++i) {
             const auto& m = moves[i];
             local_game.playMove(m);
             int score = 0;
-            switch (game.status()) {
+            switch (local_game.status()) {
                 case Game::kFirstPlayerTurn:
                 case Game::kSecondPlayerTurn:
                     if (plies == 0) {
                         score = local_game.leafEvalState();
                     } else {
                         score = evalState(local_game, !first_player_turn,
-                                plies - 1, alpha, beta);
+                                plies - 1, local_alpha, local_beta);
                     }
                     break;
                 case Game::kFirstPlayerWon:
@@ -93,34 +97,48 @@ int PVSRandContentionAlphaBetaSolver<Game, depth>::playBestMoveForGame(
                     score = 0;
                     break;
             }
-            if (first_player_turn){
-                #pragma omp critical
-                {
-                    if (score > best_score){
-                        best_score = score;
-                        best_move = m;
-                        alpha = best_score;
-                    }
+            if (first_player_turn) {
+                if (score > local_best_score) {
+                    local_best_score = score;
+                    local_best_move = m;
+                    local_alpha = local_best_score;
+                    // At top level, don't have to consider pruning.
                 }
             } else {
-                #pragma omp critical
-                {
-                    if (score < best_score){
-                        best_score = score;
-                        best_move = m;
-                        beta = best_score;
-                    }
+                if (score < local_best_score) {
+                    local_best_score = score;
+                    local_best_move = m;
+                    local_beta = local_best_score;
+                    // At top level, don't have to consider pruning.
                 }
             }
             local_game.undoMove(m);
         }
+        // Accumulate local best scores and moves to find global.
+        if (first_player_turn) {
+            #pragma omp critical
+            {
+                if (local_best_score > global_best_score) {
+                    global_best_score = local_best_score;
+                    global_best_move = local_best_move;
+                }
+            }
+        } else {
+            #pragma omp critical
+            {
+                if (local_best_score < global_best_score) {
+                    global_best_score = local_best_score;
+                    global_best_move = local_best_move;
+                }
+            }
+        }
     }
-    game.playMove(best_move);
-    return best_score;
+    game.playMove(global_best_move);
+    return global_best_score;
 }
 
 template <class Game, int depth>
-int PVSRandContentionAlphaBetaSolver<Game, depth>::evalState(
+int PVSRandLocalAlphaBetaSolver<Game, depth>::evalState(
         Game& game, bool first_player_turn, int plies, int alpha, int beta) {
     auto moves = game.availableMoves();
     //std::cout << "evalState plies: " << plies << "\n";
@@ -179,33 +197,36 @@ int PVSRandContentionAlphaBetaSolver<Game, depth>::evalState(
 }
 
 template <class Game, int depth>
-int PVSRandContentionAlphaBetaSolver<Game, depth>::PVSplit(
+int PVSRandLocalAlphaBetaSolver<Game, depth>::PVSplit(
         Game& game, bool first_player_turn, int plies, int alpha, int beta) {
 
     //std::cout << "PVSplit plies: " << plies << "\n";
     auto moves = game.availableMoves();
     size_t num_moves = moves.size();
-    if (num_moves == 0)
+    int r = rand() % num_moves;
+    if (moves.size() == 0)
         return game.leafEvalState();
 
-    int r = rand() % num_moves;
     game.playMove(moves[r]);
-    int best_score;
+    int global_best_score;
     if (plies == 0){
-        best_score = game.leafEvalState();
+        global_best_score = game.leafEvalState();
     } else {
-        best_score = PVSplit(game, !first_player_turn, plies-1, alpha, beta);
+        global_best_score = PVSplit(game, !first_player_turn, plies-1, alpha, beta);
     }
-    if (best_score > beta)
+    if (global_best_score > beta)
         return beta;
-    if (best_score > alpha)
-        alpha = best_score;
+    if (global_best_score > alpha)
+        alpha = global_best_score;
 
     game.undoMove(moves[r]);
     moves.erase(moves.begin() + r);
 
     #pragma omp parallel
     {
+        int local_best_score = first_player_turn ? INT_MIN : INT_MAX;
+        int local_alpha = alpha;
+        int local_beta = beta;
         Game local_game = Game(game);
         #pragma omp for schedule(static)
         for (size_t i = 0; i < moves.size(); ++i){
@@ -219,7 +240,7 @@ int PVSRandContentionAlphaBetaSolver<Game, depth>::PVSplit(
                     if (plies == 0){
                         score = local_game.leafEvalState();
                     } else {
-                        score = evalState(local_game, !first_player_turn, plies-1, alpha, beta);
+                        score = evalState(local_game, !first_player_turn, plies-1, local_alpha, local_beta);
                     }
                     break;
                 case Game::kFirstPlayerWon:
@@ -233,25 +254,34 @@ int PVSRandContentionAlphaBetaSolver<Game, depth>::PVSplit(
                     break;
             }
             if (first_player_turn){
-                #pragma omp critical
-                {
-                    if (score > best_score){
-                        best_score = score;
-                        alpha = best_score;
-                    }
+                if (score > local_best_score){
+                    local_best_score = score;
+                    local_alpha = local_best_score;
                 }
             } else {
-                #pragma omp critical
-                {
-                    if (score < best_score){
-                        best_score = score;
-                        beta = best_score;
-                    }
+                if (score < local_best_score){
+                    local_best_score = score;
+                    local_beta = local_best_score;
                 }
             }
             local_game.undoMove(m);
         }
+        if (first_player_turn){
+            #pragma omp critical
+            {
+                if (local_best_score > global_best_score){
+                    global_best_score = local_best_score;
+                }
+            }
+        } else {
+            #pragma omp critical
+            {
+                if (local_best_score < global_best_score){
+                    global_best_score = local_best_score;
+                }
+            }
+        }
     }
-    return best_score;
+    return global_best_score;
 }
-#endif  /* PVS_CONTENTION_ALPHABETA_SOLVER_H */
+#endif  /* PVS_RAND_LOCAL_ALPHABETA_SOLVER_H */
