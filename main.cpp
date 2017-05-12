@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "cycle_timer.h"
-#include "tic_tac_toe_game.h"
+#include "gomoku_game.h"
 #include "heuristic_solver.h"
 #include "sequential_minimax_solver.h"
 #include "sequential_nocopy_minimax_solver.h"
@@ -13,11 +13,11 @@
 #include "omp_local_alphabeta_solver.h"
 
 #define REPEAT_TRIALS 10
-#define PLIES 3
-// TODO: Tightly coupled with the size of the tic-tac-toe board. Very bad. Ugh.
-#define TURNS 16
+#define PLIES 2
+// TODO: Tightly coupled with the size of the board. Very bad. Ugh.
+#define TURNS 10
 
-void runTrials(GameSolver<TicTacToeGame>& solver, const char* name) {
+void runTrials(GameSolver<GomokuGame>& solver, const char* name) {
     std::cout << "----- " << name << " -----" << std::endl;
     double total_time = 0;
     std::cout << "Completed trials: ";
@@ -39,31 +39,31 @@ void runTrials(GameSolver<TicTacToeGame>& solver, const char* name) {
 }
 
 int main() {
-    HeuristicSolver<TicTacToeGame> hs;
+    HeuristicSolver<GomokuGame> hs;
     runTrials(hs, "HEURISTIC");
 
-    SequentialMinimaxSolver<TicTacToeGame, PLIES> sms;
+    SequentialMinimaxSolver<GomokuGame, PLIES> sms;
     runTrials(sms, "SEQUENTIAL MINIMAX");
 
-    SequentialNoCopyMinimaxSolver<TicTacToeGame, PLIES> sncms;
+    SequentialNoCopyMinimaxSolver<GomokuGame, PLIES> sncms;
     runTrials(sncms, "SEQUENTIAL (NO COPY) MINIMAX");
 
-    SequentialAlphaBetaSolver<TicTacToeGame, PLIES> sabs;
+    SequentialAlphaBetaSolver<GomokuGame, PLIES> sabs;
     runTrials(sabs, "SEQUENTIAL ALPHA-BETA");
 
-    SequentialNoCopyAlphaBetaSolver<TicTacToeGame, PLIES> sncabs;
+    SequentialNoCopyAlphaBetaSolver<GomokuGame, PLIES> sncabs;
     runTrials(sncabs, "SEQUENTIAL (NO COPY) ALPHA-BETA");
 
-    OmpContentionMinimaxSolver<TicTacToeGame, PLIES> ocms;
+    OmpContentionMinimaxSolver<GomokuGame, PLIES> ocms;
     runTrials(ocms, "OPENMP (GLOBAL CONTENTION) MINIMAX");
 
-    OmpLocalMinimaxSolver<TicTacToeGame, PLIES> olms;
+    OmpLocalMinimaxSolver<GomokuGame, PLIES> olms;
     runTrials(olms, "OPENMP (THREAD-LOCAL) MINIMAX");
 
-    OmpContentionAlphaBetaSolver<TicTacToeGame, PLIES> ocabs;
+    OmpContentionAlphaBetaSolver<GomokuGame, PLIES> ocabs;
     runTrials(ocabs, "OPENMP (GLOBAL CONTENTION) ALPHA-BETA");
 
-    OmpLocalAlphaBetaSolver<TicTacToeGame, PLIES> olabs;
+    OmpLocalAlphaBetaSolver<GomokuGame, PLIES> olabs;
     runTrials(olabs, "OPENMP (THREAD-LOCAL) ALPHA-BETA");
 
     return 0;
