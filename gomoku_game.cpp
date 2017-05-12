@@ -112,30 +112,28 @@ void GomokuGame::playMove(GomokuMove move) {
 
 void GomokuGame::resetState() {
     current_state_.first.fill(kEmpty);
-    /*
+// 10 steps
     current_state_.first[3 * BOARD_SIDE + 6]=kX;
+    current_state_.first[3 * BOARD_SIDE + 14]=kX;
+
 
     current_state_.first[4 * BOARD_SIDE + 4]=kO;
     current_state_.first[4 * BOARD_SIDE + 7]=kO;
 
     current_state_.first[5 * BOARD_SIDE + 3]=kO;
-    current_state_.first[5 * BOARD_SIDE + 4]=kX;
-    current_state_.first[5 * BOARD_SIDE + 6]=kO;
+    current_state_.first[5 * BOARD_SIDE + 5]=kX;
     current_state_.first[5 * BOARD_SIDE + 7]=kX;
     current_state_.first[5 * BOARD_SIDE + 8]=kO;
-    current_state_.first[5 * BOARD_SIDE + 9]=kX;
 
-    current_state_.first[6 * BOARD_SIDE + 4]=kX;
+    current_state_.first[6 * BOARD_SIDE + 2]=kX;
     current_state_.first[6 * BOARD_SIDE + 5]=kO;
-    current_state_.first[6 * BOARD_SIDE + 7]=kX;
     current_state_.first[6 * BOARD_SIDE + 8]=kX;
     current_state_.first[6 * BOARD_SIDE + 9]=kO;
 
-    current_state_.first[7 * BOARD_SIDE + 4]=kX;
+    current_state_.first[7 * BOARD_SIDE + 11]=kX;
     current_state_.first[7 * BOARD_SIDE + 5]=kO;
     current_state_.first[7 * BOARD_SIDE + 6]=kX;
-    current_state_.first[7 * BOARD_SIDE + 7]=kX;
-    current_state_.first[7 * BOARD_SIDE + 8]=kX;
+    current_state_.first[7 * BOARD_SIDE + 8]=kX
     current_state_.first[7 * BOARD_SIDE + 9]=kO;
 
     current_state_.first[8 * BOARD_SIDE + 5]=kX;
@@ -149,6 +147,46 @@ void GomokuGame::resetState() {
     current_state_.first[10 * BOARD_SIDE + 6]=kX;
 
     current_state_.first[11 * BOARD_SIDE + 5]=kO;
+    current_state_.first[11 * BOARD_SIDE + 10]=kX;
+
+
+    // 15 steps
+    /*
+    current_state_.first[3 * BOARD_SIDE + 6]=kX;
+    current_state_.first[3 * BOARD_SIDE + 14]=kX;
+
+
+    current_state_.first[4 * BOARD_SIDE + 4]=kO;
+    current_state_.first[4 * BOARD_SIDE + 7]=kO;
+
+    current_state_.first[5 * BOARD_SIDE + 3]=kO;
+    current_state_.first[5 * BOARD_SIDE + 5]=kX;
+    current_state_.first[5 * BOARD_SIDE + 6]=kX;
+    current_state_.first[5 * BOARD_SIDE + 7]=kX;
+    current_state_.first[5 * BOARD_SIDE + 8]=kO;
+
+    current_state_.first[6 * BOARD_SIDE + 2]=kX;
+    current_state_.first[6 * BOARD_SIDE + 5]=kO;
+    current_state_.first[6 * BOARD_SIDE + 8]=kX;
+    current_state_.first[6 * BOARD_SIDE + 9]=kO;
+
+    current_state_.first[7 * BOARD_SIDE + 11]=kX;
+    current_state_.first[7 * BOARD_SIDE + 5]=kO;
+    current_state_.first[7 * BOARD_SIDE + 6]=kX;
+    current_state_.first[7 * BOARD_SIDE + 9]=kO;
+
+    current_state_.first[8 * BOARD_SIDE + 5]=kX;
+    current_state_.first[8 * BOARD_SIDE + 6]=kO;
+    current_state_.first[8 * BOARD_SIDE + 8]=kO;
+    current_state_.first[8 * BOARD_SIDE + 9]=kX;
+
+    current_state_.first[9 * BOARD_SIDE + 4]=kO;
+    current_state_.first[9 * BOARD_SIDE + 7]=kO;
+
+    current_state_.first[10 * BOARD_SIDE + 6]=kX;
+
+    current_state_.first[11 * BOARD_SIDE + 5]=kO;
+    current_state_.first[11 * BOARD_SIDE + 10]=kX;
 */
     current_state_.second = true;
 }
