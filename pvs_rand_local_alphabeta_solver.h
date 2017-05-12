@@ -55,7 +55,7 @@ int PVSRandLocalAlphaBetaSolver<Game, depth>::playBestMoveForGame(
     if (plies == 0) {
         global_best_score = game.leafEvalState();
     } else {
-        global_best_score = PVSplit(game, first_player_turn, plies-1, alpha, beta);
+        global_best_score = PVSplit(game, !first_player_turn, plies-1, alpha, beta);
     }
     //printf("huh\n");
     if (first_player_turn) {

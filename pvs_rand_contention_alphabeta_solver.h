@@ -55,7 +55,7 @@ int PVSRandContentionAlphaBetaSolver<Game, depth>::playBestMoveForGame(
     if (plies == 0) {
         best_score = game.leafEvalState();
     } else {
-        best_score = PVSplit(game, first_player_turn, plies-1, alpha, beta);
+        best_score = PVSplit(game, !first_player_turn, plies-1, alpha, beta);
     }
     //printf("huh\n");
     if (first_player_turn) {
