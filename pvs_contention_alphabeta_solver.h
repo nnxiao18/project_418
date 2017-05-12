@@ -63,11 +63,13 @@ int PVSContentionAlphaBetaSolver<Game, depth>::playBestMoveForGame(
     }
 
     game.undoMove(moves[0]);
+    bool found_winning_move = false;
     #pragma omp parallel
     {
         Game local_game = Game(game);
         #pragma omp for schedule(static)
         for (int i = 1; i < moves.size(); ++i) {
+            if (found_winning_move){ continue;}
             const auto& m = moves[i];
             local_game.playMove(m);
             int score = 0;
@@ -83,10 +85,16 @@ int PVSContentionAlphaBetaSolver<Game, depth>::playBestMoveForGame(
                     break;
                 case Game::kFirstPlayerWon:
                     //Leave the move done; we want to do this winning move.
-                    return INT_MAX;
+                    best_score = INT_MAX;
+                    best_move = m;
+                    found_winning_move = true;
+                    continue;
                 case Game::kSecondPlayerWon:
                     //Leave the move done; we want to do this winning move.
-                    return INT_MIN;
+                    best_score = INT_MIN;
+                    best_move = m;
+                    found_winning_move = true;
+                    continue;
                 case Game::kTie:
                     // TODO: Does this make sense? A tie is of neutral value?
                     score = 0;
@@ -199,13 +207,14 @@ int PVSContentionAlphaBetaSolver<Game, depth>::PVSplit(
         alpha = best_score;
 
     game.undoMove(moves[0]);
-
+    bool found_winning_move = false;
     #pragma omp parallel
     {
         Game local_game = Game(game);
         #pragma omp for schedule(static)
         for (size_t i = 1; i < moves.size(); ++i){
             //printf("i:%zu, size: %lu\n",i,moves.size());
+            if (found_winning_move) { continue; }
             const auto& m = moves[i];
             local_game.playMove(m);
             int score = 0;
@@ -220,10 +229,14 @@ int PVSContentionAlphaBetaSolver<Game, depth>::PVSplit(
                     break;
                 case Game::kFirstPlayerWon:
                     local_game.undoMove(m);
-                    return INT_MAX;
+                    best_score = INT_MAX;
+                    found_winning_move = true;
+                    continue;
                 case Game::kSecondPlayerWon:
                     local_game.undoMove(m);
-                    return INT_MIN;
+                    best_score = INT_MIN;
+                    found_winning_move = true;
+                    continue;
                 case Game::kTie:
                     score = 0;
                     break;
