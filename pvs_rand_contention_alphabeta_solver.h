@@ -85,11 +85,9 @@ int PVSRandContentionAlphaBetaSolver<Game, depth>::playBestMoveForGame(
                     }
                     break;
                 case Game::kFirstPlayerWon:
-                    score = INT_MAX;
-                    break;
+                    return INT_MAX;
                 case Game::kSecondPlayerWon:
-                    score = INT_MIN;
-                    break;
+                    return INT_MIN;
                 case Game::kTie:
                     // TODO: Does this make sense? A tie is of neutral value?
                     score = 0;
@@ -142,11 +140,11 @@ int PVSRandContentionAlphaBetaSolver<Game, depth>::evalState(
                 }
                 break;
             case Game::kFirstPlayerWon:
-                score = INT_MAX;
-                break;
+                game.undoMove(m);
+                return INT_MAX;
             case Game::kSecondPlayerWon:
-                score = INT_MIN;
-                break;
+                game.undoMove(m);
+                return INT_MIN;
             case Game::kTie:
                 // TODO: Does this make sense? A tie is of neutral value?
                 score = 0;
@@ -158,7 +156,7 @@ int PVSRandContentionAlphaBetaSolver<Game, depth>::evalState(
             }
             if (score > alpha) {
                 alpha = score;
-                if (alpha >= beta) {
+                if (alpha > beta) {
                     game.undoMove(m);
                     break;  // Prune
                 }
@@ -169,7 +167,7 @@ int PVSRandContentionAlphaBetaSolver<Game, depth>::evalState(
             }
             if (score < beta) {
                 beta = score;
-                if (beta <= alpha) {
+                if (beta < alpha) {
                     game.undoMove(m);
                     break;  // Prune
                 }
@@ -225,11 +223,11 @@ int PVSRandContentionAlphaBetaSolver<Game, depth>::PVSplit(
                     }
                     break;
                 case Game::kFirstPlayerWon:
-                    score = INT_MAX;
-                    break;
+                    local_game.undoMove(m);
+                    return INT_MAX;
                 case Game::kSecondPlayerWon:
-                    score = INT_MIN;
-                    break;
+                    local_game.undoMove(m);
+                    return INT_MIN;
                 case Game::kTie:
                     score = 0;
                     break;
