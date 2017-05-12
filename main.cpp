@@ -19,7 +19,7 @@
 #define REPEAT_TRIALS 1
 #define PLIES 3
 // TODO: Tightly coupled with the size of the board. Very bad. Ugh.
-#define TURNS 10
+#define TURNS 20
 
 void runTrials(GameSolver<GomokuGame>& solver, const char* name) {
     std::cout << "----- " << name << " -----" << std::endl;
@@ -39,7 +39,8 @@ void runTrials(GameSolver<GomokuGame>& solver, const char* name) {
         std::cout << trial;
     }
     std::cout << std::endl;
-    std::cout << "Seconds elapsed playing moves: " << total_time << std::endl;
+    std::cout << "Seconds elapsed playing moves: " << total_time << std::endl
+            << std::endl;
 }
 
 int main() {
@@ -55,20 +56,20 @@ int main() {
     SequentialAlphaBetaSolver<GomokuGame, PLIES> sabs;
     runTrials(sabs, "SEQUENTIAL ALPHA-BETA");
 
-//    SequentialNoCopyAlphaBetaSolver<GomokuGame, PLIES> sncabs;
-  //  runTrials(sncabs, "SEQUENTIAL (NO COPY) ALPHA-BETA");
+    SequentialNoCopyAlphaBetaSolver<GomokuGame, PLIES> sncabs;
+    runTrials(sncabs, "SEQUENTIAL (NO COPY) ALPHA-BETA");
 
-    //OmpContentionMinimaxSolver<GomokuGame, PLIES> ocms;
-    //runTrials(ocms, "OPENMP (GLOBAL CONTENTION) MINIMAX");
+    OmpContentionMinimaxSolver<GomokuGame, PLIES> ocms;
+    runTrials(ocms, "OPENMP (GLOBAL CONTENTION) MINIMAX");
 
-    //OmpLocalMinimaxSolver<GomokuGame, PLIES> olms;
-    //runTrials(olms, "OPENMP (THREAD-LOCAL) MINIMAX");
+    OmpLocalMinimaxSolver<GomokuGame, PLIES> olms;
+    runTrials(olms, "OPENMP (THREAD-LOCAL) MINIMAX");
 
-    //OmpContentionAlphaBetaSolver<GomokuGame, PLIES> ocabs;
-    //runTrials(ocabs, "OPENMP (GLOBAL CONTENTION) ALPHA-BETA");
+    OmpContentionAlphaBetaSolver<GomokuGame, PLIES> ocabs;
+    runTrials(ocabs, "OPENMP (GLOBAL CONTENTION) ALPHA-BETA");
 
-    //OmpLocalAlphaBetaSolver<GomokuGame, PLIES> olabs;
-    //runTrials(olabs, "OPENMP (THREAD-LOCAL) ALPHA-BETA");
+    OmpLocalAlphaBetaSolver<GomokuGame, PLIES> olabs;
+    runTrials(olabs, "OPENMP (THREAD-LOCAL) ALPHA-BETA");
 
     PVSContentionAlphaBetaSolver<GomokuGame, PLIES> pcabs;
     runTrials(pcabs, "PVS (GLOBAL CONTENTION) ALPHA-BETA");
