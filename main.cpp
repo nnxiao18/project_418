@@ -44,6 +44,12 @@ void runTrials(GameSolver<GomokuGame>& solver, const char* name) {
 }
 
 int main() {
+    std::cout << "BOARD_SIDE=" << BOARD_SIDE << std::endl;
+    std::cout << "K_IN_ROW=" << K_IN_ROW << std::endl;
+    std::cout << "REPEAT_TRIALS=" << REPEAT_TRIALS << std::endl;
+    std::cout << "PLIES=" << PLIES << std::endl;
+    std::cout << "TURNS=" << TURNS << std::endl;
+
     HeuristicSolver<GomokuGame> hs;
     runTrials(hs, "HEURISTIC");
 
@@ -82,5 +88,6 @@ int main() {
 
     PVSRandLocalAlphaBetaSolver<GomokuGame, PLIES> prlabs;
     runTrials(plabs, "PVS (RAND, THREAD-LOCAL) ALPHA-BETA");
+
     return 0;
 }
