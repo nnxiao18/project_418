@@ -1,5 +1,8 @@
-- Implement gomoku for larger branching factor
+- Try starting from intermediate state board
+
 - Try OpenMP with tasks for dynamic work scheduling for recursive algo
-- PVS
-* Better generalized tic-tac-toe ((n,n,k) instead of (n,n,n))
+- Iterative Deepening with PVS (heuristic, get best one)
+- JAMBOREE
+
+- Presentation, update website, creates graphs, (2-3)
 * Win rate (with bounded time) testing harness

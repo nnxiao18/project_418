@@ -12,12 +12,13 @@
 #include "omp_contention_alphabeta_solver.h"
 #include "omp_local_alphabeta_solver.h"
 #include "pvs_contention_alphabeta_solver.h"
+#include "pvs_rand_contention_alphabeta_solver.h"
 #include "pvs_local_alphabeta_solver.h"
 
-#define REPEAT_TRIALS 10
+#define REPEAT_TRIALS 1
 #define PLIES 3
 // TODO: Tightly coupled with the size of the board. Very bad. Ugh.
-#define TURNS 5
+#define TURNS 10
 
 void runTrials(GameSolver<GomokuGame>& solver, const char* name) {
     std::cout << "----- " << name << " -----" << std::endl;
@@ -49,12 +50,14 @@ int main() {
 
     //SequentialNoCopyMinimaxSolver<GomokuGame, PLIES> sncms;
     //runTrials(sncms, "SEQUENTIAL (NO COPY) MINIMAX");
+    //SequentialNoCopyAlphaBetaSolver<GomokuGame, PLIES> sncabs;
+    //runTrials(sncabs, "SEQUENTIAL (NO COPY) ALPHA-BETA");
 
     SequentialAlphaBetaSolver<GomokuGame, PLIES> sabs;
     runTrials(sabs, "SEQUENTIAL ALPHA-BETA");
 
-    SequentialNoCopyAlphaBetaSolver<GomokuGame, PLIES> sncabs;
-    runTrials(sncabs, "SEQUENTIAL (NO COPY) ALPHA-BETA");
+//    SequentialNoCopyAlphaBetaSolver<GomokuGame, PLIES> sncabs;
+  //  runTrials(sncabs, "SEQUENTIAL (NO COPY) ALPHA-BETA");
 
     //OmpContentionMinimaxSolver<GomokuGame, PLIES> ocms;
     //runTrials(ocms, "OPENMP (GLOBAL CONTENTION) MINIMAX");
@@ -70,6 +73,9 @@ int main() {
 
     PVSContentionAlphaBetaSolver<GomokuGame, PLIES> pcabs;
     runTrials(pcabs, "PVS (GLOBAL CONTENTION) ALPHA-BETA");
+
+    PVSRandContentionAlphaBetaSolver<GomokuGame, PLIES> prcabs;
+    runTrials(prcabs, "PVS (RAND, GLOBAL CONTENTION) ALPHA-BETA");
 
     PVSLocalAlphaBetaSolver<GomokuGame, PLIES> plabs;
     runTrials(plabs, "PVS (THREAD-LOCAL) ALPHA-BETA");
