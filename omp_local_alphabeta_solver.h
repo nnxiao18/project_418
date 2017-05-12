@@ -73,15 +73,15 @@ int OmpLocalAlphaBetaSolver<Game, depth>::playBestMoveForGame(
                     }
                     break;
                 case Game::kFirstPlayerWon:
-                    best_score = INT_MAX;
-                    best_move = m;
+                    global_best_score = INT_MAX;
+                    global_best_move = m;
                     found_winning_move = true;
                     // No need for local_game.undoMove(m); we won't be trying
                     // any other moves on it.
                     continue;
                 case Game::kSecondPlayerWon:
-                    best_score = INT_MIN;
-                    best_move = m;
+                    global_best_score = INT_MIN;
+                    global_best_move = m;
                     found_winning_move = true;
                     // No need for local_game.undoMove(m); we won't be trying
                     // any other moves on it.
