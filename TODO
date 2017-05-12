@@ -1,3 +1,4 @@
+- Implement gomoku for larger branching factor
 - Try OpenMP with tasks for dynamic work scheduling for recursive algo
 - PVS
 * Better generalized tic-tac-toe ((n,n,k) instead of (n,n,n))
