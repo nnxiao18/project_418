@@ -88,10 +88,10 @@ int main() {
     runTrials(plabs, "PVS (THREAD-LOCAL) ALPHA-BETA");
 
     PVSRandLocalAlphaBetaSolver<GomokuGame, PLIES> prlabs;
-    runTrials(plabs, "PVS (RAND, THREAD-LOCAL) ALPHA-BETA");
+    runTrials(prlabs, "PVS (RAND, THREAD-LOCAL) ALPHA-BETA");
 
     PVSHeurContentionAlphaBetaSolver<GomokuGame, PLIES> phcabs;
-    runTrials(plabs, "PVS (HEUR, GLOBAL CONTENTION) ALPHA-BETA");
+    runTrials(phcabs, "PVS (HEUR, GLOBAL CONTENTION) ALPHA-BETA");
 
     return 0;
 }
