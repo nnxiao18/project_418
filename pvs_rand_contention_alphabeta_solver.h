@@ -1,5 +1,5 @@
-#ifndef PVS__CONTENTION_ALPHABETA_SOLVER_H
-#define PVS_CONTENTION_ALPHABETA_SOLVER_H
+#ifndef PVS_RAND_CONTENTION_ALPHABETA_SOLVER_H
+#define PVS_RAND_CONTENTION_ALPHABETA_SOLVER_H
 
 #include "game_solver.h"
 
@@ -268,4 +268,4 @@ int PVSRandContentionAlphaBetaSolver<Game, depth>::PVSplit(
     }
     return best_score;
 }
-#endif  /* PVS_CONTENTION_ALPHABETA_SOLVER_H */
+#endif  /* PVS_RAND_CONTENTION_ALPHABETA_SOLVER_H */

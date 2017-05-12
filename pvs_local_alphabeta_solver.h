@@ -1,4 +1,4 @@
-#ifndef PVS__LOCAL_ALPHABETA_SOLVER_H
+#ifndef PVS_LOCAL_ALPHABETA_SOLVER_H
 #define PVS_LOCAL_ALPHABETA_SOLVER_H
 
 #include "game_solver.h"
