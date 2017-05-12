@@ -60,11 +60,11 @@ int SequentialNoCopyAlphaBetaSolver<Game, depth>::playBestMoveForGame(
                 }
                 break;
             case Game::kFirstPlayerWon:
-                score = INT_MAX;
-                break;
+                // Leave the move done; we want to do this winning move.
+                return INT_MAX;
             case Game::kSecondPlayerWon:
-                score = INT_MIN;
-                break;
+                // Leave the move done; we want to do this winning move.
+                return INT_MIN;
             case Game::kTie:
                 // TODO: Does this make sense? A tie is of neutral value?
                 score = 0;
@@ -110,11 +110,11 @@ int SequentialNoCopyAlphaBetaSolver<Game, depth>::evalState(
                 }
                 break;
             case Game::kFirstPlayerWon:
-                score = INT_MAX;
-                break;
+                game.undoMove(m);
+                return INT_MAX;
             case Game::kSecondPlayerWon:
-                score = INT_MIN;
-                break;
+                game.undoMove(m);
+                return INT_MIN;
             case Game::kTie:
                 // TODO: Does this make sense? A tie is of neutral value?
                 score = 0;
@@ -126,7 +126,7 @@ int SequentialNoCopyAlphaBetaSolver<Game, depth>::evalState(
             }
             if (score > alpha) {
                 alpha = score;
-                if (alpha >= beta) {
+                if (alpha > beta) {
                     game.undoMove(m);
                     break;  // Prune
                 }
@@ -137,7 +137,7 @@ int SequentialNoCopyAlphaBetaSolver<Game, depth>::evalState(
             }
             if (score < beta) {
                 beta = score;
-                if (beta <= alpha) {
+                if (beta < alpha) {
                     game.undoMove(m);
                     break;  // Prune
                 }

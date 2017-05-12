@@ -47,6 +47,7 @@ int SequentialAlphaBetaSolver<Game, depth>::playBestMoveForGame(
         Game game_copy = Game(game);
         game_copy.playMove(m);
         int score = 0;
+        bool found_winning_move = false;
         switch (game_copy.status()) {
             case Game::kFirstPlayerTurn:
             case Game::kSecondPlayerTurn:
@@ -58,15 +59,24 @@ int SequentialAlphaBetaSolver<Game, depth>::playBestMoveForGame(
                 }
                 break;
             case Game::kFirstPlayerWon:
-                score = INT_MAX;
+                best_score = INT_MAX;
+                best_move = m;
+                found_winning_move = true;
                 break;
             case Game::kSecondPlayerWon:
-                score = INT_MIN;
+                best_score = INT_MIN;
+                best_move = m;
+                found_winning_move = true;
                 break;
             case Game::kTie:
                 // TODO: Does this make sense? A tie is of neutral value?
                 score = 0;
                 break;
+
+        }
+        // If found_winning_move, no need to evaluate remanining moves.
+        if (found_winning_move) {
+            break;
         }
         if (first_player_turn) {
             if (score > best_score) {
@@ -75,7 +85,7 @@ int SequentialAlphaBetaSolver<Game, depth>::playBestMoveForGame(
             }
             if (score > alpha) {
                 alpha = score;
-                if (alpha >= beta) {
+                if (alpha > beta) {
                     break;  // Prune
                 }
             }
@@ -86,7 +96,7 @@ int SequentialAlphaBetaSolver<Game, depth>::playBestMoveForGame(
             }
             if (score < beta) {
                 beta = score;
-                if (beta <= alpha) {
+                if (beta < alpha) {
                     break;  // Prune
                 }
             }
