@@ -67,11 +67,11 @@ int OmpLocalMinimaxSolver<Game, depth>::playBestMoveForGame(
                     }
                     break;
                 case Game::kFirstPlayerWon:
-                    score = INT_MAX;
-                    break;
+                    // Leave the move done; we want to do this winning move.
+                    return INT_MAX;
                 case Game::kSecondPlayerWon:
-                    score = INT_MIN;
-                    break;
+                    // Leave the move done; we want to do this winning move.
+                    return INT_MIN;
                 case Game::kTie:
                     // TODO: Does this make sense? A tie is of neutral value?
                     score = 0;
@@ -131,15 +131,11 @@ int OmpLocalMinimaxSolver<Game, depth>::evalState(
                 }
                 break;
             case Game::kFirstPlayerWon:
-                // TODO: If first_player_turn, could break out of for loop here
-                // because we know we can't do better than a winning move.
-                score = INT_MAX;
-                break;
+                game.undoMove(m);
+                return INT_MAX;
             case Game::kSecondPlayerWon:
-                // TODO: If !first_player_turn, could break out of for loop
-                // here because we know we can't do better than a winning move.
-                score = INT_MIN;
-                break;
+                game.undoMove(m);
+                return INT_MIN;
             case Game::kTie:
                 // TODO: Does this make sense? A tie is of neutral value?
                 score = 0;

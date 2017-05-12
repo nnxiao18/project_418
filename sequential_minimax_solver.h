@@ -46,6 +46,7 @@ int SequentialMinimaxSolver<Game, depth>::playBestMoveForGame(
         Game game_copy = Game(game);
         game_copy.playMove(m);
         int score = 0;
+        bool found_winning_move = false;
         switch (game_copy.status()) {
             case Game::kFirstPlayerTurn:
             case Game::kSecondPlayerTurn:
@@ -57,19 +58,23 @@ int SequentialMinimaxSolver<Game, depth>::playBestMoveForGame(
                 }
                 break;
             case Game::kFirstPlayerWon:
-                // TODO: If first_player_turn, could break out of for loop here
-                // because we know we can't do better than a winning move.
-                score = INT_MAX;
+                best_score = INT_MAX;
+                best_move = m;
+                found_winning_move = true;
                 break;
             case Game::kSecondPlayerWon:
-                // TODO: If !first_player_turn, could break out of for loop
-                // here because we know we can't do better than a winning move.
-                score = INT_MIN;
+                best_score = INT_MIN;
+                best_move = m;
+                found_winning_move = true;
                 break;
             case Game::kTie:
                 // TODO: Does this make sense? A tie is of neutral value?
                 score = 0;
                 break;
+        }
+        // If found_winning_move, no need to evaluate remanining moves.
+        if (found_winning_move) {
+            break;
         }
         if (first_player_turn) {
             if (score > best_score) {
