@@ -11,11 +11,13 @@
 #include "omp_local_minimax_solver.h"
 #include "omp_contention_alphabeta_solver.h"
 #include "omp_local_alphabeta_solver.h"
+#include "pvs_contention_alphabeta_solver.h"
+#include "pvs_local_alphabeta_solver.h"
 
 #define REPEAT_TRIALS 10
-#define PLIES 2
+#define PLIES 3
 // TODO: Tightly coupled with the size of the board. Very bad. Ugh.
-#define TURNS 10
+#define TURNS 5
 
 void runTrials(GameSolver<GomokuGame>& solver, const char* name) {
     std::cout << "----- " << name << " -----" << std::endl;
@@ -42,11 +44,11 @@ int main() {
     HeuristicSolver<GomokuGame> hs;
     runTrials(hs, "HEURISTIC");
 
-    SequentialMinimaxSolver<GomokuGame, PLIES> sms;
-    runTrials(sms, "SEQUENTIAL MINIMAX");
+    //SequentialMinimaxSolver<GomokuGame, PLIES> sms;
+    //runTrials(sms, "SEQUENTIAL MINIMAX");
 
-    SequentialNoCopyMinimaxSolver<GomokuGame, PLIES> sncms;
-    runTrials(sncms, "SEQUENTIAL (NO COPY) MINIMAX");
+    //SequentialNoCopyMinimaxSolver<GomokuGame, PLIES> sncms;
+    //runTrials(sncms, "SEQUENTIAL (NO COPY) MINIMAX");
 
     SequentialAlphaBetaSolver<GomokuGame, PLIES> sabs;
     runTrials(sabs, "SEQUENTIAL ALPHA-BETA");
@@ -54,17 +56,23 @@ int main() {
     SequentialNoCopyAlphaBetaSolver<GomokuGame, PLIES> sncabs;
     runTrials(sncabs, "SEQUENTIAL (NO COPY) ALPHA-BETA");
 
-    OmpContentionMinimaxSolver<GomokuGame, PLIES> ocms;
-    runTrials(ocms, "OPENMP (GLOBAL CONTENTION) MINIMAX");
+    //OmpContentionMinimaxSolver<GomokuGame, PLIES> ocms;
+    //runTrials(ocms, "OPENMP (GLOBAL CONTENTION) MINIMAX");
 
-    OmpLocalMinimaxSolver<GomokuGame, PLIES> olms;
-    runTrials(olms, "OPENMP (THREAD-LOCAL) MINIMAX");
+    //OmpLocalMinimaxSolver<GomokuGame, PLIES> olms;
+    //runTrials(olms, "OPENMP (THREAD-LOCAL) MINIMAX");
 
     OmpContentionAlphaBetaSolver<GomokuGame, PLIES> ocabs;
     runTrials(ocabs, "OPENMP (GLOBAL CONTENTION) ALPHA-BETA");
 
     OmpLocalAlphaBetaSolver<GomokuGame, PLIES> olabs;
     runTrials(olabs, "OPENMP (THREAD-LOCAL) ALPHA-BETA");
+
+    PVSContentionAlphaBetaSolver<GomokuGame, PLIES> pcabs;
+    runTrials(pcabs, "PVS (GLOBAL CONTENTION) ALPHA-BETA");
+
+    PVSLocalAlphaBetaSolver<GomokuGame, PLIES> plabs;
+    runTrials(plabs, "PVS (THREAD-LOCAL) ALPHA-BETA");
 
     return 0;
 }
