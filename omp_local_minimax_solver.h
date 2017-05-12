@@ -53,7 +53,7 @@ int OmpLocalMinimaxSolver<Game, depth>::playBestMoveForGame(
         auto local_best_move = moves[0];
         Game local_game = Game(game);
         #pragma omp for schedule(static)
-        for (int i = 0; i < moves.size(); ++i) {
+        for (size_t i = 0; i < moves.size(); ++i) {
             if (found_winning_move) {
                 continue;
             }
